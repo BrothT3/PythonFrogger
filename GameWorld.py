@@ -1,6 +1,8 @@
 from msvcrt import setmode
 import pygame
 
+from Player import Player
+
 
 class Singleton(type):
     _instances = {}
@@ -13,16 +15,25 @@ class Singleton(type):
 
 class GameWorld(metaclass=Singleton):
 
-    @property
-    def gameObjects(self):
-        return self.gameObjects
+    _gameobjects = []
 
-    @gameObjects.setter
-    def gameObjects(self, value):
-        self.gameObjects = value
+    # region PROPERTIESBIATCH
+    # @property
+    # def gameObjects(self):
+    #     return self.gameObjects
 
-    def __init__(self):
-        self._gameObjects = []
+    # @gameObjects.setter
+    # def gameObjects(self, value):
+    #     self.gameObjects = value
+    #     self._gameobjects.add(value)
+
+    # def __init__(self):
+    #     self._gameObjects = []
+
+    # endregion
+
+    def get_gameobjects(self):
+        return self._gameobjects
 
     def runpygame(self):
         pygame.init()
@@ -33,21 +44,28 @@ class GameWorld(metaclass=Singleton):
         fpsClock = pygame.time.Clock()
         dt = 1/fps
 
+        player = Player()
+        self._gameobjects.append(player)
+        
         # gameloop
         while True:
             self.update(self, dt)
             self.draw(self, screen)
             dt = fpsClock.tick(fps)
 
-    #@abc.abstractclassmethod
+    # @abc.abstractclassmethod
     def update(self, dt):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+        for go in self.get_gameobjects(self):
+            go.update(dt)
 
   # @abc.abstractclassmethod
     def draw(self, screen):
         screen.fill((0, 0, 0))
+        for go in self.get_gameobjects(self):
+            screen.blit(go.sprite_image, go.sprite.rect)
         pygame.display.update()
 
 
