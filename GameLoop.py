@@ -1,5 +1,5 @@
-import Main
+import GameWorld
 
 
 while True:       
- Main.GameWorld.runpygame(Main.GameWorld)
+ GameWorld.GameWorld.runpygame(GameWorld.GameWorld)
