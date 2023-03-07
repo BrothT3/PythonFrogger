@@ -3,7 +3,7 @@ import pygame, sys
 from GameObject import GameObject
 from GameObjects.Log import Log
 from GameObjects.Player import Player
-
+import random
 
 class Singleton(type):
     _instances = {}
@@ -32,9 +32,18 @@ class GameWorld(metaclass=Singleton):
     #     self._gameObjects = []
 
     # endregion
+    level = 1
+    spawntimer = 1
+    spawntimermax = 1
 
     def get_gameobjects(self):
         return self._gameobjects
+    
+    def get_gameObjectsCount(self):
+        i = 0
+        for x in self._gameobjects:
+            i += 1
+        return i
 
     def runpygame(self):
         pygame.init()
@@ -44,11 +53,20 @@ class GameWorld(metaclass=Singleton):
         fps = 60.0
         fpsClock = pygame.time.Clock()
         dt = 1/fps
-
+        
         player = Player()
         self._gameobjects.append(player)
-        log = Log()
-        self._gameobjects.append(log)
+        # log = Log()
+        # log.sprite.rect.x = 200
+        # log.sprite.rect.y = 150
+        # self._gameobjects.append(log)
+        # log2 = Log()
+        # log2.sprite.rect.x = 500
+        # log2.sprite.rect.y = 300
+        # self._gameobjects.append(log2)
+        # print(log.sprite.rect)
+        # print(log2.sprite.rect)
+        
         
         # gameloop
         while True:
@@ -64,6 +82,7 @@ class GameWorld(metaclass=Singleton):
                 sys.exit()
         for go in self.get_gameobjects(self):
             go.update(dt)
+        self.spawnlog(self, dt)
 
   # @abc.abstractclassmethod
     def draw(self, screen):
@@ -72,6 +91,13 @@ class GameWorld(metaclass=Singleton):
             screen.blit(go.sprite_image, go.sprite.rect)
         pygame.display.update()
 
+    def spawnlog(self, dt):
+        self.spawntimer -= dt
+        amount = self.get_gameObjectsCount(self)
+        while amount < (7- self.level) and self.spawntimer <= 10:   
+            self._gameobjects.append(Log())
+            amount = self.get_gameObjectsCount(self)
+            self.spawntimer = self.spawntimermax
 
 if __name__ == '__main__':
 
