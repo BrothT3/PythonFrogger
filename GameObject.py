@@ -1,13 +1,5 @@
 
-
-
-
-
-
-
-
 import abc
-
 
 class GameObject(metaclass=abc.ABCMeta):
 
