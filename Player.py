@@ -1,9 +1,13 @@
 
 
+import abc
+from overrides import override
 import pygame
+import GameObject
+
+class Player(GameObject.GameObject):
 
 
-class Player():
 
     sprite_image =  pygame.image.load("player.png")
 
@@ -13,5 +17,17 @@ class Player():
     sprite.rect.x = 100
     sprite.rect.y = 100
 
+    
     def update(self, dt):
         self.sprite.rect.x += 1
+
+    
+    def onCollision(self, other):
+        pass
+
+
+
+    
+
+    
+

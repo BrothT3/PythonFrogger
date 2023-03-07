@@ -1,5 +1,6 @@
 from msvcrt import setmode
 import pygame
+from GameObject import GameObject
 
 from Player import Player
 
