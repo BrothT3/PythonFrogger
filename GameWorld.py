@@ -1,8 +1,8 @@
 from msvcrt import setmode
-import pygame
+import pygame, sys
 from GameObject import GameObject
-
-from Player import Player
+from GameObjects.Log import Log
+from GameObjects.Player import Player
 
 
 class Singleton(type):
@@ -47,6 +47,8 @@ class GameWorld(metaclass=Singleton):
 
         player = Player()
         self._gameobjects.append(player)
+        log = Log()
+        self._gameobjects.append(log)
         
         # gameloop
         while True:
@@ -59,6 +61,7 @@ class GameWorld(metaclass=Singleton):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
         for go in self.get_gameobjects(self):
             go.update(dt)
 
