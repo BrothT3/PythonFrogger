@@ -8,20 +8,19 @@ import GameObject
 class Log(GameObject.GameObject):
 
 
+    def __init__(self, sprite_image):
+        self.sprite = pygame.sprite.Sprite()
+        super().__init__(self.sprite, sprite_image)
+        self.lane = 0
+        self.lanedetermined = False
+        self.lanesX = [0, 710, 0, 710, 0, 710]
+        self.lanesY = [0, 100, 200, 300, 400, 500]
+        self.sprite.rect = self.sprite_image.get_rect()
+        self.determineLane()
 
-    sprite_image =  pygame.image.load("Sprites/player.png")
-
-    sprite = pygame.sprite.Sprite()
-
-    sprite.rect = sprite_image.get_rect()
-    sprite.rect.x = 100
-    sprite.rect.y = 100
-
-    
-    lanedetermined = False
-    lane = 0
-    lanesX = [0, 710, 0, 710, 0, 710]
-    lanesY = [0, 100, 200, 300, 400, 500]
+       
+              
+   
     def determineLane(self):
         if not self.lanedetermined:
             self.lane = random.randint(0, 5)
@@ -29,6 +28,7 @@ class Log(GameObject.GameObject):
             self.sprite.rect.y = self.lanesY[self.lane]
             
             self.lanedetermined = True
+        
         
     def move(self):
         if self.lane == 0 or self.lane == 3 or self.lane == 5:

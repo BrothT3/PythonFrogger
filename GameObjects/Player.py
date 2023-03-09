@@ -7,15 +7,14 @@ import GameObject
 
 class Player(GameObject.GameObject):
 
+    #sprite_image = path 
+    def __init__(self, sprite_image):
+        self.sprite = pygame.sprite.Sprite()
+        super().__init__(self.sprite, sprite_image)
+        self.sprite.rect = self.sprite_image.get_rect()
+        self.sprite.rect.x = 100
+        self.sprite.rect.y = 100
 
-
-    sprite_image =  pygame.image.load("Sprites/player.png")
-
-    sprite = pygame.sprite.Sprite()
-
-    sprite.rect = sprite_image.get_rect()
-    sprite.rect.x = 100
-    sprite.rect.y = 100
 
     moveDistance = 30
     released = True

@@ -45,10 +45,15 @@ class GameWorld(metaclass=Singleton):
         fpsClock = pygame.time.Clock()
         dt = 1/fps
 
-        player = Player()
+        player = Player("Sprites/player.png")
         self._gameobjects.append(player)
-        log = Log()
+        log = Log("Sprites/player.png")
         self._gameobjects.append(log)
+        
+        
+     
+        
+
         
         # gameloop
         while True:
