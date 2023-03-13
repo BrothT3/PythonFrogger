@@ -45,9 +45,9 @@ class GameWorld(metaclass=Singleton):
         fpsClock = pygame.time.Clock()
         dt = 1/fps
 
-        player = Player("Sprites/player.png")
+        player = Player("Sprites/Player/Player1.png")
         self._gameobjects.append(player)
-        log = Log("Sprites/player.png")
+        log = Log("Sprites/Logs/Log1.png")
         self._gameobjects.append(log)
         
         
