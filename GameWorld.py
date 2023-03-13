@@ -50,7 +50,7 @@ class GameWorld(metaclass=Singleton):
         log = Log("Sprites/Logs/Log1.png")
         self._gameobjects.append(log)
         
-        
+    
      
         
 
@@ -59,7 +59,8 @@ class GameWorld(metaclass=Singleton):
         while True:
             self.update(self, dt)
             self.draw(self, screen)
-            dt = fpsClock.tick(fps)
+            #dt = fpsClock.tick(fps) / 1000.0
+            dt = fpsClock.tick(fps) 
 
     # @abc.abstractclassmethod
     def update(self, dt):
@@ -74,7 +75,9 @@ class GameWorld(metaclass=Singleton):
     def draw(self, screen):
         screen.fill((0, 0, 0))
         for go in self.get_gameobjects(self):
-            screen.blit(go.sprite_image, go.sprite.rect)
+            
+           go.draw(screen) 
+          #screen.blit(go.sprite_image, go.sprite.rect)
         pygame.display.update()
 
 

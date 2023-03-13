@@ -39,6 +39,7 @@ class Log(GameObject.GameObject):
         if (self.sprite.rect.x == -10 or self.sprite.rect.x == 810):
             pass
 
+    @override
     def update(self, dt):
         self.determineLane()
         self.move()
