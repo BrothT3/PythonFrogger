@@ -1,0 +1,21 @@
+from msvcrt import setmode
+import pygame, sys
+from GameObject import GameObject
+from GameObjects.Log import Log
+
+class LogSpawnPoint():
+
+
+    def __init__(self, x, y, direction, spawntime):
+        self.spawnx = x
+        self.spawny = y
+        self.direction = direction
+        self.spawntime = spawntime
+        self.logtypetime = 0
+    
+    def spawnready(self):
+        now = pygame.time.get_ticks
+        if (now - self.spawntime > self.logtypetime):
+            return True
+    
+    
