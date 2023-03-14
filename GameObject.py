@@ -6,9 +6,10 @@ import pygame
 class GameObject():
 
     #if you remove the sprite in constructor it no longer works
-    def __init__(self, sprite, sprite_image):
+    def __init__(self, sprite, sprite_image, tag):
         self.sprite = pygame.sprite.Sprite()
         self.sprite_image = pygame.image.load(sprite_image)
+        self.tag = tag
 
     
     def update(self, dt):
@@ -21,3 +22,6 @@ class GameObject():
 
     def onCollision(self, other):
         pass
+
+    
+

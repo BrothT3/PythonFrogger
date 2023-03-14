@@ -10,13 +10,15 @@ class Log(GameObject.GameObject):
 
     def __init__(self, sprite_image):
         self.sprite = pygame.sprite.Sprite()
-        super().__init__(self.sprite, sprite_image)
+        super().__init__(self.sprite, sprite_image, "Log")
         self.lane = 0
         self.lanedetermined = False
         self.lanesX = [0, 710, 0, 710, 0, 710]
         self.lanesY = [0, 100, 200, 300, 400, 500]
         self.sprite.rect = self.sprite_image.get_rect()
+        self.rect = self.sprite_image.get_rect()
         self.determineLane()
+
 
        
               
@@ -39,16 +41,17 @@ class Log(GameObject.GameObject):
         if (self.sprite.rect.x == -10 or self.sprite.rect.x == 810):
             pass
 
+
     @override
     def update(self, dt):
         self.determineLane()
         self.move()
 
-    
-    def onCollision(self, other):
-        pass
-        # if other.tag == "log"
-            #lanedetermined = false
+
+    @override
+    def onCollision(self, other):     
+        other.rect.x -= (other.rect.x - self.sprite.rect.x) * float(7) /1700
+
 
 
 

@@ -5,6 +5,7 @@ from GameObjects.Log import Log
 from GameObjects.Player import Player
 
 
+
 class Singleton(type):
     _instances = {}
 
@@ -53,6 +54,8 @@ class GameWorld(metaclass=Singleton):
         self._player.append(player)
         log = Log("Sprites/LogSprites/Log1.png")
         self._gameobjects.append(log)
+
+
         
 
 
@@ -74,6 +77,7 @@ class GameWorld(metaclass=Singleton):
             p.update(dt)
         for go in self.get_gameobjects(self):
             go.update(dt)
+        self.collisionCheck(self)
 
 
 
@@ -87,6 +91,14 @@ class GameWorld(metaclass=Singleton):
             p.draw(screen)
             
         pygame.display.update()
+
+    def collisionCheck(self):
+        for p in self._player:
+            for go in self._gameobjects:
+                if go.tag == "Log":  
+                    if p.rect.colliderect(go.sprite.rect):
+                     go.onCollision(p)
+                     #p.onCollision(go)
 
 
 if __name__ == '__main__':
