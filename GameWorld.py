@@ -17,6 +17,7 @@ class Singleton(type):
 class GameWorld(metaclass=Singleton):
 
     _gameobjects = []
+    _player = []
 
     # region PROPERTIESBIATCH
     # @property
@@ -35,6 +36,9 @@ class GameWorld(metaclass=Singleton):
 
     def get_gameobjects(self):
         return self._gameobjects
+    
+    def get_player(self):
+        return self._player
 
     def runpygame(self):
         pygame.init()
@@ -46,10 +50,12 @@ class GameWorld(metaclass=Singleton):
         dt = 1/fps
 
         player = Player("Sprites/Player/Player1.png")
-        self._gameobjects.append(player)
+        self._player.append(player)
         log = Log("Sprites/Logs/Log1.png")
         self._gameobjects.append(log)
         
+
+
 
         # gameloop
         while True:
@@ -64,16 +70,22 @@ class GameWorld(metaclass=Singleton):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        for p in self.get_player(self):
+            p.update(dt)
         for go in self.get_gameobjects(self):
             go.update(dt)
 
 
+
     def draw(self, screen):
         screen.fill((0, 0, 0))
+        
         for go in self.get_gameobjects(self):
-            
            go.draw(screen) 
-          #screen.blit(go.sprite_image, go.sprite.rect)
+           
+        for p in self.get_player(self):
+            p.draw(screen)
+            
         pygame.display.update()
 
 

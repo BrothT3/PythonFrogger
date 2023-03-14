@@ -16,7 +16,7 @@ class GameObject():
 
     def draw(self, screen):
         screen.blit(self.sprite_image, self.sprite.rect)
-        pygame.display.update()
+        
 
 
     def onCollision(self, other):
