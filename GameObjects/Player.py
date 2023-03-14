@@ -11,7 +11,7 @@ class Player(GameObject.GameObject):
     # sprite_image = path
     def __init__(self, sprite_image):
         self.sprite = pygame.sprite.Sprite()
-        super().__init__(self.sprite, sprite_image)
+        super().__init__(self.sprite, sprite_image, "Player")
         self.sprite.rect = self.sprite_image.get_rect()
         self.rect = self.sprite_image.get_rect()
         self.sprite.rect.x = 100
@@ -64,9 +64,16 @@ class Player(GameObject.GameObject):
         if self.moving:
             self.animdone = False
 
+    @override
     def onCollision(self, other):
         pass
+        #self.sprite.rect.x += other.sprite.rect.x
+        #self.move(other)
+        #print(self.rect.x)
 
+    def move(self, other):
+        movement = self.rect.x + other.rect.x 
+        self.rect.x += movement 
 
     def animate(self):
         now = pygame.time.get_ticks()
@@ -85,5 +92,3 @@ class Player(GameObject.GameObject):
     @override
     def draw(self, screen):
         screen.blit(self.current_sprite, self.rect)
-
-

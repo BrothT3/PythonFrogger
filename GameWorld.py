@@ -5,6 +5,7 @@ from GameObjects.Log import Log
 from GameObjects.Player import Player
 from LogSpawnerMan import LogSpawnerMan
 
+
 class Singleton(type):
     _instances = {}
 
@@ -52,7 +53,11 @@ class GameWorld(metaclass=Singleton):
 
         player = Player("Sprites/Player/Player1.png")
         self._player.append(player)
-        
+
+        log = Log("Sprites/LogSprites/Log1.png")
+        self._gameobjects.append(log)
+
+
         
 
 
@@ -74,8 +79,12 @@ class GameWorld(metaclass=Singleton):
             p.update(dt)
         for go in self.get_gameobjects(self):
             go.update(dt)
+
         if(self._gameobjects.count(GameObject) <= 8):
             self.createlogs(self)
+
+        self.collisionCheck(self)
+
 
 
 
@@ -89,12 +98,24 @@ class GameWorld(metaclass=Singleton):
             p.draw(screen)
             
         pygame.display.update()
+
     def createlogs(self):
         self.gwspawns = self.logSpawnerMan.checkready()
         if self.gwspawns is not 0:
             self._gameobjects.append(self.logSpawnerMan.spawnLog(self.gwspawns))
         else:
             pass
+
+
+    def collisionCheck(self):
+        for p in self._player:
+            for go in self._gameobjects:
+                if go.tag == "Log":  
+                    if p.rect.colliderect(go.sprite.rect):
+                     go.onCollision(p)
+                     #p.onCollision(go)
+
+
 
 if __name__ == '__main__':
 
