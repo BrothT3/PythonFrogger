@@ -54,8 +54,7 @@ class GameWorld(metaclass=Singleton):
         player = Player("Sprites/Player/Player1.png")
         self._player.append(player)
 
-        log = Log("Sprites/LogSprites/Log1.png")
-        self._gameobjects.append(log)
+
 
 
         

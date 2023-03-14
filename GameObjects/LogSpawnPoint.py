@@ -19,7 +19,6 @@ class LogSpawnPoint():
         if (now - self.spawntime > 0):
             return True
         else:
-            print("falseyes")
             return False
     
     

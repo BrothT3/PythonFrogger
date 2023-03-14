@@ -45,9 +45,9 @@ class Log(GameObject.GameObject):
         # if (self.sprite.rect.x == -10 or self.sprite.rect.x == 810):
         #     pass
         if self.direction == True:
-            self.sprite.rect.x += 3
+            self.sprite.rect.x += 2
         else:
-            self.sprite.rect.x -= 3
+            self.sprite.rect.x -= 2
 
 
     @override
