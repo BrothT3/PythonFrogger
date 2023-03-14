@@ -3,7 +3,7 @@ import pygame, sys
 from GameObject import GameObject
 from GameObjects.Log import Log
 from GameObjects.Player import Player
-
+from LogSpawnerMan import LogSpawnerMan
 
 class Singleton(type):
     _instances = {}
@@ -29,8 +29,8 @@ class GameWorld(metaclass=Singleton):
     #     self.gameObjects = value
     #     self._gameobjects.add(value)
 
-    # def __init__(self):
-    #     self._gameObjects = []
+    def __init__(self):
+        self.logSpawnerMan = LogSpawnerMan()
 
     # endregion
 
@@ -41,6 +41,7 @@ class GameWorld(metaclass=Singleton):
         return self._player
 
     def runpygame(self):
+        self.__init__(self)
         pygame.init()
         screen = pygame.display.set_mode((800, 600))
 
@@ -73,6 +74,8 @@ class GameWorld(metaclass=Singleton):
             p.update(dt)
         for go in self.get_gameobjects(self):
             go.update(dt)
+        if(self._gameobjects.count(GameObject) <= 8):
+            self.createlogs(self)
 
 
 
@@ -86,7 +89,12 @@ class GameWorld(metaclass=Singleton):
             p.draw(screen)
             
         pygame.display.update()
-
+    def createlogs(self):
+        self.gwspawns = self.logSpawnerMan.checkready()
+        if self.gwspawns is not 0:
+            self._gameobjects.append(self.logSpawnerMan.spawnLog(self.gwspawns))
+        else:
+            pass
 
 if __name__ == '__main__':
 

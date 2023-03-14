@@ -6,16 +6,20 @@ from GameObjects.Log import Log
 class LogSpawnPoint():
 
 
-    def __init__(self, x, y, direction, spawntime):
+    def __init__(self, x, y, leftdirection, spawntime):
         self.spawnx = x
         self.spawny = y
-        self.direction = direction
+        self.direction = leftdirection
         self.spawntime = spawntime
-        self.logtypetime = 0
+        
+        
     
     def spawnready(self):
-        now = pygame.time.get_ticks
-        if (now - self.spawntime > self.logtypetime):
+        now = pygame.time.get_ticks()
+        if (now - self.spawntime > 0):
             return True
+        else:
+            print("falseyes")
+            return False
     
     
