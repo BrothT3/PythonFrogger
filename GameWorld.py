@@ -32,8 +32,11 @@ class GameWorld(metaclass=Singleton):
 
     def __init__(self):
         self.logSpawnerMan = LogSpawnerMan()
+        self.deltatime = 0
+
         self.currentlevel = 0
         self.newlevel = 1
+
 
     @property
     def deltatime(self):
@@ -155,7 +158,7 @@ class GameWorld(metaclass=Singleton):
     def collisionCheck(self):
         for p in self._player:
             for go in self._gameobjects:
-                if go.tag == "Log":  
+                if go.tag == "Log" and p.rect.bottom - go.sprite.rect.bottom < 50:  
                     if p.rect.colliderect(go.sprite.rect):
                      go.onCollision(p)
                      #p.onCollision(go)

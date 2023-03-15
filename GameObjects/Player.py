@@ -13,9 +13,7 @@ class Player(GameObject.GameObject):
         self.sprite = pygame.sprite.Sprite()
         super().__init__(self.sprite, sprite_image, "Player", False)
         self.sprite.rect = self.sprite_image.get_rect()
-        self.rect = self.sprite_image.get_rect()
-        self.sprite.rect.x = 100
-        self.sprite.rect.y = 100
+        self.rect = self.sprite_image.get_rect() 
         self.sprites = [pygame.image.load("Sprites/Player/Player1.png"),
                         pygame.image.load("Sprites/Player/Player2.png"),
                         pygame.image.load("Sprites/Player/Player3.png"),
@@ -101,4 +99,9 @@ class Player(GameObject.GameObject):
 
     @override
     def draw(self, screen):
+        red = (255, 0, 0)
         screen.blit(self.current_sprite, self.rect)
+        pygame.draw.rect(self.current_sprite, red, [0,0, self.rect.width, self.rect.height], 1)
+
+        
+        
