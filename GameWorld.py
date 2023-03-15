@@ -32,7 +32,11 @@ class GameWorld(metaclass=Singleton):
 
     def __init__(self):
         self.logSpawnerMan = LogSpawnerMan()
-        #self.deltatime = 0
+        self.deltatime = 0
+
+        self.currentlevel = 0
+        self.newlevel = 1
+
 
     @property
     def deltatime(self):
@@ -97,6 +101,7 @@ class GameWorld(metaclass=Singleton):
         if(self._gameobjects.count(GameObject) <= 8):
             self.createlogs(self)
 
+        self.leveltime(self)
         self.collisionCheck(self)
 
 
@@ -119,6 +124,35 @@ class GameWorld(metaclass=Singleton):
             self._gameobjects.append(self.logSpawnerMan.spawnLog(self.gwspawns))
         else:
             pass
+    
+    def leveltime(self):
+        now = pygame.time.get_ticks()
+
+        if (now - 50000 > 0):
+            self.newlevel = 6
+            self.changelevel(self)
+        elif (now - 40000 > 0):
+            self.newlevel = 5
+            self.changelevel(self)
+        elif (now - 30000 > 0 ):
+            self.newlevel = 4
+            self.changelevel(self)
+        elif (now - 20000 > 0 ):
+            self.newlevel = 3
+            self.changelevel(self)
+        elif (now - 10000 > 0 ):
+            self.newlevel = 2
+            self.changelevel(self)
+        elif (now - 100 > 0):
+            self.newlevel = 1
+            self.changelevel(self)
+
+    def changelevel(self):
+        if self.newlevel > self.currentlevel:
+            LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
+            self.currentlevel = self.newlevel
+            print(f"you are on level {self.currentlevel}")
+         
 
 
     def collisionCheck(self):

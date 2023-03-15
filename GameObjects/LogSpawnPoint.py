@@ -11,12 +11,13 @@ class LogSpawnPoint():
         self.spawny = y
         self.direction = leftdirection
         self.spawntime = spawntime
+        self.spawnEnabled = True
         
         
     
     def spawnready(self):
         now = pygame.time.get_ticks()
-        if (now - self.spawntime > 0):
+        if (now - self.spawntime > 0 and self.spawnEnabled):
             return True
         else:
             return False
