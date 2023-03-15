@@ -59,6 +59,11 @@ class Log(GameObject.GameObject):
     def update(self, dt):
         #self.determineLane()
         self.move()
+    @override
+    def draw(self, screen):
+        red = (255, 0, 0)
+        screen.blit(self.sprite_image, self.sprite.rect)
+        pygame.draw.rect(self.sprite_image, red, [0,0, self.sprite.rect.width, self.sprite.rect.height], 1)
 
 
     @override
