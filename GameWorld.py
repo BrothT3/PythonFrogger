@@ -19,7 +19,7 @@ class GameWorld(metaclass=Singleton):
 
     _gameobjects = []
     _player = []
-
+    
     # region PROPERTIESBIATCH
     # @property
     # def gameObjects(self):
@@ -32,11 +32,19 @@ class GameWorld(metaclass=Singleton):
 
     def __init__(self):
         self.logSpawnerMan = LogSpawnerMan()
+        self.deltatime = 0
+
+    @property
+    def deltatime(self):
+        return self.deltatime
 
     # endregion
 
     def get_gameobjects(self):
         return self._gameobjects
+    
+    def get_gameobject_count(self):
+        return self._gameobjects.count(self)
     
     def get_player(self):
         return self._player
@@ -44,12 +52,14 @@ class GameWorld(metaclass=Singleton):
     def runpygame(self):
         self.__init__(self)
         pygame.init()
+        pygame.font.init()
         screen = pygame.display.set_mode((800, 600))
 
         pygame.display.set_caption("My Pygame window")
         fps = 60.0
         fpsClock = pygame.time.Clock()
-        dt = 1/fps
+        #dt = 1/fps
+        self.deltatime = 1/fps
 
         player = Player("Sprites/Player/Player1.png")
         self._player.append(player)
@@ -57,16 +67,17 @@ class GameWorld(metaclass=Singleton):
 
 
 
-        
-
 
 
         # gameloop
         while True:
-            self.update(self, dt)
+            self.update(self, self.deltatime)
             self.draw(self, screen)
             #dt = fpsClock.tick(fps) / 1000.0
-            dt = fpsClock.tick(fps) 
+            self.deltatime = fpsClock.tick(fps) / 1000.0
+            
+
+            
 
 
     def update(self, dt):
@@ -77,7 +88,11 @@ class GameWorld(metaclass=Singleton):
         for p in self.get_player(self):
             p.update(dt)
         for go in self.get_gameobjects(self):
-            go.update(dt)
+            #removes references
+            if go.toberemoved:
+                self._gameobjects.remove(go)
+            else:
+             go.update(dt)
 
         if(self._gameobjects.count(GameObject) <= 8):
             self.createlogs(self)

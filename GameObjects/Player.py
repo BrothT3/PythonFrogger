@@ -11,7 +11,7 @@ class Player(GameObject.GameObject):
     # sprite_image = path
     def __init__(self, sprite_image):
         self.sprite = pygame.sprite.Sprite()
-        super().__init__(self.sprite, sprite_image, "Player")
+        super().__init__(self.sprite, sprite_image, "Player", False)
         self.sprite.rect = self.sprite_image.get_rect()
         self.rect = self.sprite_image.get_rect()
         self.sprite.rect.x = 100
@@ -30,7 +30,7 @@ class Player(GameObject.GameObject):
         self.animdone = True
 
 
-    moveDistance = 30
+    moveDistance = 80
     released = True
 
     @override
@@ -47,7 +47,7 @@ class Player(GameObject.GameObject):
             self.moving = True
             self.released = False
         elif keys[pygame.K_a] and self.released:
-            self.rect.x -= self.moveDistance
+            self.rect.x -= self.moveDistance 
             self.moving = True
             self.released = False
         elif keys[pygame.K_d] and self.released:
@@ -63,6 +63,16 @@ class Player(GameObject.GameObject):
 
         if self.moving:
             self.animdone = False
+
+        #keep player inside screen
+        if self.rect.x <= 10:
+            self.rect.x = 15
+        elif self.rect.x >= 750:
+            self.rect.x = 730
+        if self.rect.y <= 0:
+            self.rect.y = 0
+        elif self.rect.y >= 500:
+            self.rect.y = 500
 
     @override
     def onCollision(self, other):
@@ -86,7 +96,7 @@ class Player(GameObject.GameObject):
             self.current_frame = (self.current_frame + 1) % len(self.sprites)
             self.current_sprite = self.sprites[self.current_frame]
 
-            if self.current_frame is 6:
+            if self.current_frame == 6:
                 self.animdone = True
 
     @override
