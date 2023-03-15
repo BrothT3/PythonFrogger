@@ -56,5 +56,17 @@ class LogSpawnerMan():
             return 0
         if (readyamount >= 1):
             return _readySpawns
+        
+    def disableSpawn(self, newlevel):
+        currentlevel = newlevel -1
+        i = 0
+        for x in self.spawnpoints:
+            if (currentlevel == 0):
+                break
+            x.spawnEnabled = False
+            i += 1
+            if i >= currentlevel:
+                break
+            
 
     
