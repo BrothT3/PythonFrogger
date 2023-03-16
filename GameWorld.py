@@ -54,21 +54,30 @@ class GameWorld(metaclass=Singleton):
         self.__init__(self)
         pygame.init()
         pygame.font.init()
-        screen = pygame.display.set_mode((800, 600))
+        screen = pygame.display.set_mode((800, 700))
 
         pygame.display.set_caption("My Pygame window")
         fps = 60.0
         fpsClock = pygame.time.Clock()
         self.deltatime = 1/fps
 
+        log = Log("Sprites\LogSprites\Log1.png",300, 600, False)
+        log.shouldmove = False
+        self._gameobjects.append(log)
+        
+        #self._gameobjects.append(log)
         player = Player("Sprites/Player/Player1.png")
+        player.rect.x = 300
+        player.rect.y = 580
         self._player.append(player)
-
+        
         # gameloop
         while True:
             self.update(self, self.deltatime)
             self.draw(self, screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
+
+            
 
     def update(self, dt):
         for event in pygame.event.get():
@@ -91,13 +100,16 @@ class GameWorld(metaclass=Singleton):
         self.collisionCheck(self)
 
     def draw(self, screen):
-        screen.fill((0, 0, 0))
-
+        screen.fill((0, 150, 255))
+        
         for go in self.get_gameobjects(self):
             go.draw(screen)
 
         for p in self.get_player(self):
             p.draw(screen)
+
+        
+        
 
         pygame.display.update()
 
@@ -142,9 +154,15 @@ class GameWorld(metaclass=Singleton):
             for go in self._gameobjects:
                 #abs to make sure the distance is right regardless of if it's positive or negative
                 if  (go.tag == "Log" and 
-                    abs(go.sprite.rect.bottom - p.rect.bottom) < 50):
+                    abs(go.sprite.rect.bottom - p.rect.bottom) < 50 and
+                    go.shouldmove):
                     if p.rect.colliderect(go.sprite.rect):
                         go.onCollision(p)
+
+                
+                    
+                
+
                         
 
 

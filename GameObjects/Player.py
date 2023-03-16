@@ -28,7 +28,7 @@ class Player(GameObject.GameObject):
         self.animdone = True
 
 
-    moveDistance = 80
+    moveDistance = 100
     released = True
 
     @override
@@ -67,10 +67,10 @@ class Player(GameObject.GameObject):
             self.rect.x = 15
         elif self.rect.x >= 750:
             self.rect.x = 730
-        if self.rect.y <= 0:
-            self.rect.y = 0
-        elif self.rect.y >= 500:
-            self.rect.y = 500
+        if self.rect.y <= -20:
+            self.rect.y = -20
+        elif self.rect.y >= 650:
+            self.rect.y = 650
 
     @override
     def onCollision(self, other):

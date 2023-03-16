@@ -17,6 +17,7 @@ class Log(GameObject.GameObject):
         self.sprite.rect.y = y
         self.direction = directionleft 
         self.movespeed = 2     
+        self.shouldmove = True
         # self.lane = 0
         # self.lanedetermined = False
         # self.lanesX = [0, 710, 0, 710, 0, 710]
@@ -27,7 +28,13 @@ class Log(GameObject.GameObject):
 
 
        
-              
+    @property
+    def shouldmove(self):
+        return self._shouldmove
+    
+    @shouldmove.setter
+    def shouldmove(self, value):
+        self._shouldmove = value
    
     def determineLane(self):
         if not self.lanedetermined:
@@ -59,7 +66,8 @@ class Log(GameObject.GameObject):
     @override
     def update(self, dt):
         #self.determineLane()
-        self.move()
+        if self.shouldmove:
+            self.move()
     @override
     def draw(self, screen):
         red = (255, 0, 0)
