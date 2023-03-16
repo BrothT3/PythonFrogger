@@ -15,7 +15,8 @@ class Log(GameObject.GameObject):
         self.sprite.rect = self.sprite_image.get_rect()
         self.sprite.rect.x = x
         self.sprite.rect.y = y
-        self.direction = directionleft      
+        self.direction = directionleft 
+        self.movespeed = 2     
         # self.lane = 0
         # self.lanedetermined = False
         # self.lanesX = [0, 710, 0, 710, 0, 710]
@@ -39,9 +40,9 @@ class Log(GameObject.GameObject):
         
     def move(self):
         if self.direction == True:
-            self.sprite.rect.x += 2
+            self.sprite.rect.x += self.movespeed
         else:
-            self.sprite.rect.x -= 2
+            self.sprite.rect.x -= self.movespeed
 
         #slettes når de når de her værdier, men værden bliver mindre og mindre 
         #hver gang så skal modificeres
@@ -70,9 +71,10 @@ class Log(GameObject.GameObject):
     def onCollision(self, other):    
         dt = GameWorld.GameWorld.deltatime
         if self.direction:
-            other.rect.x += (other.rect.x - self.sprite.rect.x ) * dt 
+            other.rect.x += self.movespeed
         else:
-            other.rect.x -= (other.rect.x - self.sprite.rect.x) * dt 
+            other.rect.x -= self.movespeed
+
         # if self.direction:
         #     other.rect.x += ((other.rect.x - self.sprite.rect.x ) * float(7)) / 225
         # else:

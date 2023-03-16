@@ -75,9 +75,7 @@ class Player(GameObject.GameObject):
     @override
     def onCollision(self, other):
         pass
-        #self.sprite.rect.x += other.sprite.rect.x
-        #self.move(other)
-        #print(self.rect.x)
+
 
     def move(self, other):
         movement = self.rect.x + other.rect.x 

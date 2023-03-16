@@ -19,7 +19,7 @@ class GameWorld(metaclass=Singleton):
 
     _gameobjects = []
     _player = []
-    
+
     # region PROPERTIESBIATCH
     # @property
     # def gameObjects(self):
@@ -37,7 +37,6 @@ class GameWorld(metaclass=Singleton):
         self.currentlevel = 0
         self.newlevel = 1
 
-
     @property
     def deltatime(self):
         return self.deltatime
@@ -46,10 +45,10 @@ class GameWorld(metaclass=Singleton):
 
     def get_gameobjects(self):
         return self._gameobjects
-    
+
     def get_gameobject_count(self):
         return self._gameobjects.count(self)
-    
+
     def get_player(self):
         return self._player
 
@@ -62,27 +61,16 @@ class GameWorld(metaclass=Singleton):
         pygame.display.set_caption("My Pygame window")
         fps = 60.0
         fpsClock = pygame.time.Clock()
-        #dt = 1/fps
         self.deltatime = 1/fps
 
         player = Player("Sprites/Player/Player1.png")
         self._player.append(player)
 
-
-
-
-
-
         # gameloop
         while True:
             self.update(self, self.deltatime)
             self.draw(self, screen)
-            #dt = fpsClock.tick(fps) / 1000.0
             self.deltatime = fpsClock.tick(fps) / 1000.0
-            
-
-            
-
 
     def update(self, dt):
         for event in pygame.event.get():
@@ -92,39 +80,37 @@ class GameWorld(metaclass=Singleton):
         for p in self.get_player(self):
             p.update(dt)
         for go in self.get_gameobjects(self):
-            #removes references
+            # removes references
             if go.toberemoved:
                 self._gameobjects.remove(go)
             else:
-             go.update(dt)
+                go.update(dt)
 
-        if(self._gameobjects.count(GameObject) <= 8):
+        if (self._gameobjects.count(GameObject) <= 8):
             self.createlogs(self)
 
         self.leveltime(self)
         self.collisionCheck(self)
 
-
-
-
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        
+
         for go in self.get_gameobjects(self):
-           go.draw(screen) 
-           
+            go.draw(screen)
+
         for p in self.get_player(self):
             p.draw(screen)
-            
+
         pygame.display.update()
 
     def createlogs(self):
         self.gwspawns = self.logSpawnerMan.checkready()
         if self.gwspawns is not 0:
-            self._gameobjects.append(self.logSpawnerMan.spawnLog(self.gwspawns))
+            self._gameobjects.append(
+                self.logSpawnerMan.spawnLog(self.gwspawns))
         else:
             pass
-    
+
     def leveltime(self):
         now = pygame.time.get_ticks()
 
@@ -134,13 +120,13 @@ class GameWorld(metaclass=Singleton):
         elif (now - 40000 > 0):
             self.newlevel = 5
             self.changelevel(self)
-        elif (now - 30000 > 0 ):
+        elif (now - 30000 > 0):
             self.newlevel = 4
             self.changelevel(self)
-        elif (now - 20000 > 0 ):
+        elif (now - 20000 > 0):
             self.newlevel = 3
             self.changelevel(self)
-        elif (now - 10000 > 0 ):
+        elif (now - 10000 > 0):
             self.newlevel = 2
             self.changelevel(self)
         elif (now - 100 > 0):
@@ -152,17 +138,15 @@ class GameWorld(metaclass=Singleton):
             LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
             self.currentlevel = self.newlevel
             print(f"you are on level {self.currentlevel}")
-         
-
 
     def collisionCheck(self):
         for p in self._player:
             for go in self._gameobjects:
-                if go.tag == "Log" and p.rect.bottom - go.sprite.rect.bottom < 50:  
+                #abs to make sure the distance is right regardless of if it's positive or negative
+                if go.tag == "Log" and abs(go.sprite.rect.bottom - p.rect.bottom) < 50:
                     if p.rect.colliderect(go.sprite.rect):
-                     go.onCollision(p)
-                     #p.onCollision(go)
-
+                        go.onCollision(p)
+                        
 
 
 if __name__ == '__main__':
