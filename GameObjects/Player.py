@@ -65,7 +65,7 @@ class Player(GameObject.GameObject):
         #keep player inside screen
         if self.rect.x <= 10:
             self.rect.x = 15
-        elif self.rect.x >= 750:
+        elif self.rect.x >= 1150:
             self.rect.x = 730
         if self.rect.y <= -20:
             self.rect.y = -20
