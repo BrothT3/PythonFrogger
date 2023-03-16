@@ -9,15 +9,16 @@ import GameWorld
 class Log(GameObject.GameObject):
 
 
-    def __init__(self, sprite_image, x, y, directionleft):
+    def __init__(self, sprite_image, x, y, directionleft, movespeed):
         self.sprite = pygame.sprite.Sprite()
         super().__init__(self.sprite, sprite_image, "Log", False)
         self.sprite.rect = self.sprite_image.get_rect()
         self.sprite.rect.x = x
         self.sprite.rect.y = y
         self.direction = directionleft 
-        self.movespeed = 2     
+        self.movespeed = movespeed     
         self.shouldmove = True
+
         # self.lane = 0
         # self.lanedetermined = False
         # self.lanesX = [0, 710, 0, 710, 0, 710]

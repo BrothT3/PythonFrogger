@@ -20,6 +20,8 @@ class LogSpawnerMan():
                            "Sprites\LogSprites\Log2.png",
                            "Sprites\LogSprites\Log3.png"]
         self.logamount = 0
+        self.logmovespeed = 1
+        
         
     def update(self, dt):
         pass
@@ -31,7 +33,7 @@ class LogSpawnerMan():
             currentspawn = readyspawns[lane]
             logtype = random.randint(0, 2)
 
-            log = Log(self.logsprites[logtype], currentspawn.spawnx, currentspawn.spawny, currentspawn.direction)
+            log = Log(self.logsprites[logtype], currentspawn.spawnx, currentspawn.spawny, currentspawn.direction, self.logmovespeed)
             
             
             match logtype:
@@ -58,7 +60,7 @@ class LogSpawnerMan():
             return _readySpawns
         
     def disableSpawn(self, newlevel):
-        currentlevel = newlevel -1
+        currentlevel = ((newlevel -1) / 2)
         i = 0
         for x in self.spawnpoints:
             if (currentlevel == 0):
@@ -68,5 +70,7 @@ class LogSpawnerMan():
             if i >= currentlevel:
                 break
             
-
+    def setlogspeed(self, newlogspeed):
+        
+        self.logmovespeed = newlogspeed
     
