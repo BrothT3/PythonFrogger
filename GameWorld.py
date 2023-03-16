@@ -4,6 +4,8 @@ from GameObject import GameObject
 from GameObjects.Log import Log
 from GameObjects.Player import Player
 from LogSpawnerMan import LogSpawnerMan
+from UIElements.ScoreCounter import Counter
+from UIElements.MenuScreen import Menu
 
 
 class Singleton(type):
@@ -33,7 +35,8 @@ class GameWorld(metaclass=Singleton):
     def __init__(self):
         self.logSpawnerMan = LogSpawnerMan()
         self.deltatime = 0
-
+        self.score = Counter()
+        self.menu = Menu()
         self.currentlevel = 0
         self.newlevel = 1
 
@@ -53,7 +56,9 @@ class GameWorld(metaclass=Singleton):
     def runpygame(self):
         self.__init__(self)
         pygame.init()
-        pygame.font.init()
+        
+        
+        
         screen = pygame.display.set_mode((800, 700))
 
         pygame.display.set_caption("My Pygame window")
@@ -76,6 +81,10 @@ class GameWorld(metaclass=Singleton):
             self.update(self, self.deltatime)
             self.draw(self, screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
+            self.score.countup()
+        
+  
+
 
             
 
@@ -107,6 +116,8 @@ class GameWorld(metaclass=Singleton):
 
         for p in self.get_player(self):
             p.draw(screen)
+        
+        self.score.draw(screen)
 
         
         
