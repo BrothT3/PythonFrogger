@@ -46,8 +46,6 @@ class GameWorld(metaclass=Singleton):
     def get_gameobjects(self):
         return self._gameobjects
 
-    def get_gameobject_count(self):
-        return self._gameobjects.count(self)
 
     def get_player(self):
         return self._player
@@ -143,7 +141,8 @@ class GameWorld(metaclass=Singleton):
         for p in self._player:
             for go in self._gameobjects:
                 #abs to make sure the distance is right regardless of if it's positive or negative
-                if go.tag == "Log" and abs(go.sprite.rect.bottom - p.rect.bottom) < 50:
+                if  (go.tag == "Log" and 
+                    abs(go.sprite.rect.bottom - p.rect.bottom) < 50):
                     if p.rect.colliderect(go.sprite.rect):
                         go.onCollision(p)
                         
