@@ -11,16 +11,16 @@ class LogSpawnerMan():
 
     def __init__(self):
         self.spawnpoints = [LogSpawnPoint(-500, 0, True, 0),
-                            LogSpawnPoint(810, 100, False, random.randint(0, 300)),
+                            LogSpawnPoint(1210, 100, False, random.randint(0, 300)),
                             LogSpawnPoint(-500, 200, True, random.randint(0, 700)),
-                            LogSpawnPoint(810, 300, False, random.randint(100, 2100)),
+                            LogSpawnPoint(1210, 300, False, random.randint(100, 2100)),
                             LogSpawnPoint(-500, 400, True, random.randint(200, 1500)),
-                            LogSpawnPoint(810, 500, False, random.randint(300, 2250))]
+                            LogSpawnPoint(1210, 500, False, random.randint(300, 2250))]
         self.logsprites = ["Sprites\LogSprites\Log1.png",
                            "Sprites\LogSprites\Log2.png",
                            "Sprites\LogSprites\Log3.png"]
         self.logamount = 0
-        self.logmovespeed = 1
+        self.logmovespeed = 3
         
         
     def update(self, dt):
@@ -71,6 +71,6 @@ class LogSpawnerMan():
                 break
             
     def setlogspeed(self, newlogspeed):
-        
-        self.logmovespeed = newlogspeed
+        self.logmovespeed = 2 + (newlogspeed / 4)
+        print(f"Logspeed: {self.logmovespeed}")
     

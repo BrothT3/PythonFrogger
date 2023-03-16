@@ -54,14 +54,14 @@ class GameWorld(metaclass=Singleton):
         self.__init__(self)
         pygame.init()
         pygame.font.init()
-        screen = pygame.display.set_mode((800, 700))
+        screen = pygame.display.set_mode((1200, 700))
 
         pygame.display.set_caption("My Pygame window")
         fps = 60.0
         fpsClock = pygame.time.Clock()
         self.deltatime = 1/fps
 
-        log = Log("Sprites\LogSprites\Log1.png",300, 600, False)
+        log = Log("Sprites\LogSprites\Log1.png",300, 600, False, 0)
         log.shouldmove = False
         self._gameobjects.append(log)
         
@@ -139,13 +139,14 @@ class GameWorld(metaclass=Singleton):
         elif (now - 10000 > 0):
             self.newlevel = 2
             self.changelevel(self)
-        elif (now - 100 > 0):
+        elif (now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
 
     def changelevel(self):
         if self.newlevel > self.currentlevel:
             LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
+            #LogSpawnerMan.setlogspeed(self.logSpawnerMan, self.newlevel)
             self.currentlevel = self.newlevel
             print(f"you are on level {self.currentlevel}")
 

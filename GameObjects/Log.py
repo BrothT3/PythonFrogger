@@ -16,7 +16,7 @@ class Log(GameObject.GameObject):
         self.sprite.rect.x = x
         self.sprite.rect.y = y
         self.direction = directionleft 
-        self.movespeed = movespeed     
+        self.movespeed = float(movespeed)     
         self.shouldmove = True
 
         # self.lane = 0
@@ -56,7 +56,7 @@ class Log(GameObject.GameObject):
         #hver gang så skal modificeres
         if self.sprite.rect.x < -600:
             self.toberemoved = True
-        elif self.sprite.rect.x >= 900:
+        elif self.sprite.rect.x >= 1250:
             self.toberemoved = True
         if self.sprite.rect.y <= -100:
             self.toberemoved = True
@@ -71,14 +71,12 @@ class Log(GameObject.GameObject):
             self.move()
     @override
     def draw(self, screen):
-        red = (255, 0, 0)
         screen.blit(self.sprite_image, self.sprite.rect)
-        pygame.draw.rect(self.sprite_image, red, [0,0, self.sprite.rect.width, self.sprite.rect.height], 1)
+  
 
 
     @override
     def onCollision(self, other):    
-        dt = GameWorld.GameWorld.deltatime
         if self.direction:
             other.rect.x += self.movespeed
         else:
