@@ -39,6 +39,7 @@ class GameWorld(metaclass=Singleton):
         self.menu = Menu()
         self.currentlevel = 0
         self.newlevel = 1
+        self.gaming = False
 
     @property
     def deltatime(self):
@@ -81,7 +82,7 @@ class GameWorld(metaclass=Singleton):
             self.update(self, self.deltatime)
             self.draw(self, screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
-            self.score.countup()
+            
         
   
 
@@ -93,6 +94,26 @@ class GameWorld(metaclass=Singleton):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        if (self.menu.isactive):
+            self.menu.menu_update(dt)
+        elif (not self.menu.isactive):
+            self.gamelogic(self, dt)
+
+    def draw(self, screen):
+        screen.fill((0, 150, 255))
+        if self.menu.isactive:
+            self.menu.draw(screen)
+        for go in self.get_gameobjects(self):
+            go.draw(screen)
+
+        for p in self.get_player(self):
+            p.draw(screen)
+        
+        self.score.draw(screen)
+
+        pygame.display.update()
+
+    def gamelogic(self, dt):
         for p in self.get_player(self):
             p.update(dt)
         for go in self.get_gameobjects(self):
@@ -107,22 +128,15 @@ class GameWorld(metaclass=Singleton):
 
         self.leveltime(self)
         self.collisionCheck(self)
-
-    def draw(self, screen):
-        screen.fill((0, 150, 255))
+        self.score.countup()
         
-        for go in self.get_gameobjects(self):
-            go.draw(screen)
-
-        for p in self.get_player(self):
-            p.draw(screen)
-        
-        self.score.draw(screen)
-
-        
+        self.openmenu(self)
         
 
-        pygame.display.update()
+    def openmenu(self):
+        keys = pygame.key.get_pressed()
+        if (keys[pygame.K_ESCAPE]):
+            self.menu.isactive = True
 
     def createlogs(self):
         self.gwspawns = self.logSpawnerMan.checkready()

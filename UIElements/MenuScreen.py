@@ -7,7 +7,7 @@ class Menu():
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
         self.text_surface = self.my_font.render("Welcome To Frawger", False, (0,0,0))
         #self.rect = self.text_surface.get_rect()
-        self.rect = pygame.Rect(0,0, 200,200)
+        self.rect = pygame.Rect(400,500, 220, 50)
         self.isactive = True
 
 
@@ -17,8 +17,9 @@ class Menu():
          point = pygame.mouse.get_pos()
 
          collide = self.rect.collidepoint(point)
-         if collide:
-            print("it be colliding")
+         if collide and pygame.mouse.get_pressed()[0]:
+            #print("it be colliding")
+            self.isactive = False
         
 
     
