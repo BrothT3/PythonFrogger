@@ -6,6 +6,7 @@ from GameObjects.Player import Player
 from LogSpawnerMan import LogSpawnerMan
 from UIElements.ScoreCounter import Counter
 from UIElements.MenuScreen import Menu
+import StopWatch
 
 
 class Singleton(type):
@@ -40,6 +41,11 @@ class GameWorld(metaclass=Singleton):
         self.currentlevel = 0
         self.newlevel = 1
         self.gaming = False
+        self.screen = pygame.display.set_mode((1200, 700))
+        self.mytimer = StopWatch.StopWatch()
+        self.now = 0
+        
+
 
     @property
     def deltatime(self):
@@ -53,14 +59,16 @@ class GameWorld(metaclass=Singleton):
     def get_player(self):
         return self._player
 
-    def runpygame(self):
-        self.__init__(self)
+    def firstrunint(self):
         pygame.init()
-
         pygame.font.init()
-        screen = pygame.display.set_mode((1200, 700))
-
         pygame.display.set_caption("My Pygame window")
+
+    def runpygame(self):
+        self.__init__(self) 
+        self.score.start_ticks = pygame.time.get_ticks()
+        #self.now = pygame.time.get_ticks()
+             
         fps = 60.0
         fpsClock = pygame.time.Clock()
         self.deltatime = 1/fps
@@ -76,10 +84,19 @@ class GameWorld(metaclass=Singleton):
         self._player.append(player)
 
         # gameloop
-        while True:
+        while not player.isdead:
             self.update(self, self.deltatime)
-            self.draw(self, screen)
+            self.draw(self, self.screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
+        
+        #remove all logs
+        tmp = [l for l in self._gameobjects if isinstance(l, Log)]
+        for x in tmp:
+            self._gameobjects.remove(x)
+        self.mytimer.reset()
+        self._player.remove(player)
+        
+        
 
     def update(self, dt):
         for event in pygame.event.get():
@@ -89,6 +106,7 @@ class GameWorld(metaclass=Singleton):
         if (self.menu.isactive):
             self.menu.menu_update(dt)
         elif (not self.menu.isactive):
+            self.mytimer.update( dt)
             self.gamelogic(self, dt)
 
     def draw(self, screen):
@@ -107,7 +125,7 @@ class GameWorld(metaclass=Singleton):
 
     def gamelogic(self, dt):
         for p in self.get_player(self):
-            p.update(dt)
+             p.update(dt)
         for go in self.get_gameobjects(self):
             # removes references
             if go.toberemoved:
@@ -124,6 +142,7 @@ class GameWorld(metaclass=Singleton):
 
         self.openmenu(self)
 
+
     def openmenu(self):
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_ESCAPE]):
@@ -138,24 +157,24 @@ class GameWorld(metaclass=Singleton):
             pass
 
     def leveltime(self):
-        now = pygame.time.get_ticks()
+        self.now = self.mytimer.get_seconds()
 
-        if (now - 50000 > 0):
+        if (self.now - 50 > 0):
             self.newlevel = 6
             self.changelevel(self)
-        elif (now - 40000 > 0):
+        elif (self.now - 40 > 0):
             self.newlevel = 5
             self.changelevel(self)
-        elif (now - 30000 > 0):
+        elif (self.now - 30 > 0):
             self.newlevel = 4
             self.changelevel(self)
-        elif (now - 20000 > 0):
+        elif (self.now - 20> 0):
             self.newlevel = 3
             self.changelevel(self)
-        elif (now - 10000 > 0):
+        elif (self.now - 10 > 0):
             self.newlevel = 2
             self.changelevel(self)
-        elif (now - 0 > 0):
+        elif (self.now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
 
@@ -190,6 +209,7 @@ class GameWorld(metaclass=Singleton):
             p.isdead = True
 
 
+        
 if __name__ == '__main__':
 
     GameWorld.runpygame(GameWorld)
