@@ -4,6 +4,7 @@ import abc
 from overrides import override
 import pygame
 import GameObject
+import SoundEffects
 
 
 class Player(GameObject.GameObject):
@@ -26,6 +27,8 @@ class Player(GameObject.GameObject):
         self.current_frame = 0
         self.moving = False
         self.animdone = True
+        pygame.mixer.init()
+        self.hop_sound = pygame.mixer.Sound("SoundEffects/hop.wav")
 
 
     moveDistance = 100
@@ -35,23 +38,27 @@ class Player(GameObject.GameObject):
     def update(self, dt):
 
         keys = pygame.key.get_pressed()
-        
+   
         if keys[pygame.K_w] and self.released:
             self.rect.y -= self.moveDistance
             self.moving = True
             self.released = False
+            self.playhopsound()
         elif keys[pygame.K_s] and self.released:
             self.rect.y += self.moveDistance
             self.moving = True
             self.released = False
+            self.playhopsound()
         elif keys[pygame.K_a] and self.released:
             self.rect.x -= self.moveDistance 
             self.moving = True
             self.released = False
+            self.playhopsound()
         elif keys[pygame.K_d] and self.released:
             self.rect.x += self.moveDistance
             self.moving = True
             self.released = False
+            self.playhopsound()
 
         if not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_s] and not keys[pygame.K_w]:
             self.released = True
@@ -83,7 +90,6 @@ class Player(GameObject.GameObject):
 
     def animate(self):
         now = pygame.time.get_ticks()
-
         #if its longer than 25milisec since last update
         if now - self.lastupdated > 25 and not self.animdone:
             self.lastupdated = now
@@ -94,6 +100,9 @@ class Player(GameObject.GameObject):
 
             if self.current_frame == 6:
                 self.animdone = True
+                
+    def playhopsound(self):
+        self.hop_sound.play()
 
     @override
     def draw(self, screen):

@@ -27,6 +27,7 @@ class Menu():
         
          screen.fill((0, 150, 155))
          screen.blit(self.text_surface, (400,500))
+         pygame.draw.rect(self.text_surface, (255,0,0),[0,0, self.rect.width +72, self.rect.height-10], 1)
 
 
     
