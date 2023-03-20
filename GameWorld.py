@@ -165,18 +165,11 @@ class GameWorld(metaclass=Singleton):
     def leveltime(self):
         self.now = self.mytimer.get_seconds()
 
-
-        if (now - 10000 > 0):
-            self.newlevel = 6
-            self.changelevel(self)
-            self.updateboss(self)
-        elif (now - 40000 > 0):
-
         if (self.now - 50 > 0):
             self.newlevel = 6
             self.changelevel(self)
+            self.updateboss(self)
         elif (self.now - 40 > 0):
-
             self.newlevel = 5
             self.changelevel(self)
         elif (self.now - 30 > 0):
@@ -185,12 +178,9 @@ class GameWorld(metaclass=Singleton):
         elif (self.now - 20> 0):
             self.newlevel = 3
             self.changelevel(self)
-
-        elif (now - 10050 > 0):
-
             self.newlevel = 2
             self.changelevel(self)
-        elif (self.now - 0 > 0):
+        elif (self.now - 10 > 0):
             self.newlevel = 1
             self.changelevel(self)
             
@@ -209,7 +199,7 @@ class GameWorld(metaclass=Singleton):
     def spawnboss(self):
         boss = Boss("Sprites/Player/player1.png")
 
-        self.shootdelay = 12000
+        self.shootdelay = 50000
         return boss
 
         
