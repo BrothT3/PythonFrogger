@@ -3,9 +3,12 @@ import pygame, sys
 from GameObject import GameObject
 from GameObjects.Log import Log
 from GameObjects.Player import Player
+from GameObjects.Boss import Boss
 from LogSpawnerMan import LogSpawnerMan
 from UIElements.ScoreCounter import Counter
 from UIElements.MenuScreen import Menu
+
+from GameObjects.Missile import Missile
 import StopWatch
 
 
@@ -41,11 +44,11 @@ class GameWorld(metaclass=Singleton):
         self.currentlevel = 0
         self.newlevel = 1
         self.gaming = False
+
         self.screen = pygame.display.set_mode((1200, 700))
         self.mytimer = StopWatch.StopWatch()
         self.now = 0
         
-
 
     @property
     def deltatime(self):
@@ -119,6 +122,9 @@ class GameWorld(metaclass=Singleton):
         for p in self.get_player(self):
             p.draw(screen)
 
+        if hasattr(self, '_boss'):
+            self._boss.draw(screen)
+
         self.score.draw(screen)
 
         pygame.display.update()
@@ -159,10 +165,18 @@ class GameWorld(metaclass=Singleton):
     def leveltime(self):
         self.now = self.mytimer.get_seconds()
 
+
+        if (now - 10000 > 0):
+            self.newlevel = 6
+            self.changelevel(self)
+            self.updateboss(self)
+        elif (now - 40000 > 0):
+
         if (self.now - 50 > 0):
             self.newlevel = 6
             self.changelevel(self)
         elif (self.now - 40 > 0):
+
             self.newlevel = 5
             self.changelevel(self)
         elif (self.now - 30 > 0):
@@ -171,19 +185,45 @@ class GameWorld(metaclass=Singleton):
         elif (self.now - 20> 0):
             self.newlevel = 3
             self.changelevel(self)
-        elif (self.now - 10 > 0):
+
+        elif (now - 10050 > 0):
+
             self.newlevel = 2
             self.changelevel(self)
         elif (self.now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
+            
 
     def changelevel(self):
         if self.newlevel > self.currentlevel:
             LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
-            # LogSpawnerMan.setlogspeed(self.logSpawnerMan, self.newlevel)
+
+            #LogSpawnerMan.setlogspeed(self.logSpawnerMan, self.newlevel)    
+            if self.newlevel == 6 and self.newlevel > self.currentlevel:
+                self._boss = self.spawnboss(self)
+
             self.currentlevel = self.newlevel
-            print(f"you are on level {self.currentlevel}")
+            print(f"you are on level {self.currentlevel}")    
+    
+    def spawnboss(self):
+        boss = Boss("Sprites/Player/player1.png")
+
+        self.shootdelay = 12000
+        return boss
+
+        
+    
+    def updateboss(self):
+        if hasattr(self, '_boss'):
+            now = pygame.time.get_ticks()
+            playerpos = self._player[0].rect.x
+            self._boss.move(playerpos)
+            if (now - self.shootdelay > 0):
+                mispos = self._boss.sprite.rect.x
+                missile = Missile("Sprites/Player/player1.png", mispos)
+                self._gameobjects.append(missile)
+                self.shootdelay += 900
 
     def collisionCheck(self):
         for p in self._player:
@@ -193,6 +233,7 @@ class GameWorld(metaclass=Singleton):
                     abs(go.sprite.rect.bottom - p.rect.bottom) < 50 and
                         go.shouldmove):
                     if p.rect.colliderect(go.sprite.rect):
+
                         go.onCollision(p)
         self.playertouchinglog(self)
 
@@ -207,6 +248,7 @@ class GameWorld(metaclass=Singleton):
                 p.isdead = False
         except IndexError:
             p.isdead = True
+
 
 
         
