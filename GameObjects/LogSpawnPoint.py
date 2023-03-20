@@ -14,6 +14,7 @@ class LogSpawnPoint():
         self.spawnEnabled = True
         
         
+        
     
     def spawnready(self):
         now = pygame.time.get_ticks()

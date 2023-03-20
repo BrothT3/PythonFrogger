@@ -7,7 +7,10 @@ from GameObjects.Boss import Boss
 from LogSpawnerMan import LogSpawnerMan
 from UIElements.ScoreCounter import Counter
 from UIElements.MenuScreen import Menu
+
 from GameObjects.Missile import Missile
+import StopWatch
+
 
 class Singleton(type):
     _instances = {}
@@ -41,6 +44,10 @@ class GameWorld(metaclass=Singleton):
         self.currentlevel = 0
         self.newlevel = 1
         self.gaming = False
+
+        self.screen = pygame.display.set_mode((1200, 700))
+        self.mytimer = StopWatch.StopWatch()
+        self.now = 0
         
 
     @property
@@ -52,44 +59,47 @@ class GameWorld(metaclass=Singleton):
     def get_gameobjects(self):
         return self._gameobjects
 
-
     def get_player(self):
         return self._player
 
-    def runpygame(self):
-        self.__init__(self)
+    def firstrunint(self):
         pygame.init()
-
         pygame.font.init()
-        screen = pygame.display.set_mode((1200, 700))
-
-
         pygame.display.set_caption("My Pygame window")
+
+    def runpygame(self):
+        self.__init__(self) 
+        self.score.start_ticks = pygame.time.get_ticks()
+        #self.now = pygame.time.get_ticks()
+             
         fps = 60.0
         fpsClock = pygame.time.Clock()
         self.deltatime = 1/fps
 
-        log = Log("Sprites\LogSprites\Log1.png",300, 600, False, 0)
+        log = Log("Sprites\LogSprites\Log1.png", 300, 600, False, 0)
         log.shouldmove = False
         self._gameobjects.append(log)
-        
-        #self._gameobjects.append(log)
+
+        # self._gameobjects.append(log)
         player = Player("Sprites/Player/Player1.png")
         player.rect.x = 300
         player.rect.y = 580
         self._player.append(player)
 
         # gameloop
-        while True:
+        while not player.isdead:
             self.update(self, self.deltatime)
-            self.draw(self, screen)
+            self.draw(self, self.screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
-            
         
-  
-
-
-            
+        #remove all logs
+        tmp = [l for l in self._gameobjects if isinstance(l, Log)]
+        for x in tmp:
+            self._gameobjects.remove(x)
+        self.mytimer.reset()
+        self._player.remove(player)
+        
+        
 
     def update(self, dt):
         for event in pygame.event.get():
@@ -99,6 +109,7 @@ class GameWorld(metaclass=Singleton):
         if (self.menu.isactive):
             self.menu.menu_update(dt)
         elif (not self.menu.isactive):
+            self.mytimer.update( dt)
             self.gamelogic(self, dt)
 
     def draw(self, screen):
@@ -110,15 +121,17 @@ class GameWorld(metaclass=Singleton):
 
         for p in self.get_player(self):
             p.draw(screen)
+
         if hasattr(self, '_boss'):
             self._boss.draw(screen)
+
         self.score.draw(screen)
 
         pygame.display.update()
 
     def gamelogic(self, dt):
         for p in self.get_player(self):
-            p.update(dt)
+             p.update(dt)
         for go in self.get_gameobjects(self):
             # removes references
             if go.toberemoved:
@@ -132,9 +145,9 @@ class GameWorld(metaclass=Singleton):
         self.leveltime(self)
         self.collisionCheck(self)
         self.score.countup()
-        
+
         self.openmenu(self)
-        
+
 
     def openmenu(self):
         keys = pygame.key.get_pressed()
@@ -150,25 +163,34 @@ class GameWorld(metaclass=Singleton):
             pass
 
     def leveltime(self):
-        now = pygame.time.get_ticks()
+        self.now = self.mytimer.get_seconds()
+
 
         if (now - 10000 > 0):
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
         elif (now - 40000 > 0):
+
+        if (self.now - 50 > 0):
+            self.newlevel = 6
+            self.changelevel(self)
+        elif (self.now - 40 > 0):
+
             self.newlevel = 5
             self.changelevel(self)
-        elif (now - 30000 > 0):
+        elif (self.now - 30 > 0):
             self.newlevel = 4
             self.changelevel(self)
-        elif (now - 20000 > 0):
+        elif (self.now - 20> 0):
             self.newlevel = 3
             self.changelevel(self)
+
         elif (now - 10050 > 0):
+
             self.newlevel = 2
             self.changelevel(self)
-        elif (now - 0 > 0):
+        elif (self.now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
             
@@ -176,10 +198,11 @@ class GameWorld(metaclass=Singleton):
     def changelevel(self):
         if self.newlevel > self.currentlevel:
             LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
+
             #LogSpawnerMan.setlogspeed(self.logSpawnerMan, self.newlevel)    
             if self.newlevel == 6 and self.newlevel > self.currentlevel:
                 self._boss = self.spawnboss(self)
-            
+
             self.currentlevel = self.newlevel
             print(f"you are on level {self.currentlevel}")    
     
@@ -205,12 +228,28 @@ class GameWorld(metaclass=Singleton):
     def collisionCheck(self):
         for p in self._player:
             for go in self._gameobjects:
-                #abs to make sure the distance is right regardless of if it's positive or negative
-                if  (go.tag == "Log" and 
+                # abs to make sure the distance is right regardless of if it's positive or negative
+                if (go.tag == "Log" and
                     abs(go.sprite.rect.bottom - p.rect.bottom) < 50 and
-                    go.shouldmove):
+                        go.shouldmove):
                     if p.rect.colliderect(go.sprite.rect):
-                        go.onCollision(p)                 
+
+                        go.onCollision(p)
+        self.playertouchinglog(self)
+
+
+    def playertouchinglog(self):
+        #check if player is colliding with any log                
+        p = self._player[0]
+        try:
+            collides = [x for x in self._gameobjects if (abs(
+                x.sprite.rect.bottom - p.rect.bottom) < 50 and p.rect.colliderect(x.sprite.rect))]
+            if isinstance(collides[0], Log):
+                p.isdead = False
+        except IndexError:
+            p.isdead = True
+
+
 
         
 if __name__ == '__main__':
