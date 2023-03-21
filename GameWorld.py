@@ -178,9 +178,10 @@ class GameWorld(metaclass=Singleton):
         elif (self.now - 20> 0):
             self.newlevel = 3
             self.changelevel(self)
+        elif (self.now - 10 > 0):
             self.newlevel = 2
             self.changelevel(self)
-        elif (self.now - 10 > 0):
+        elif (self.now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
             
@@ -189,7 +190,6 @@ class GameWorld(metaclass=Singleton):
         if self.newlevel > self.currentlevel:
             LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
 
-            #LogSpawnerMan.setlogspeed(self.logSpawnerMan, self.newlevel)    
             if self.newlevel == 6 and self.newlevel > self.currentlevel:
                 self._boss = self.spawnboss(self)
 
