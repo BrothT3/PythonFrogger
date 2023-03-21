@@ -220,10 +220,12 @@ class GameWorld(metaclass=Singleton):
             if (now - self.shootdelay > 0):
                 mispos = self._boss.sprite.rect.x + 180
                 missile = Missile("Sprites/Player/player1.png", mispos)
+                missile.tag = "Missile"
                 self._gameobjects.append(missile)
                 self.shootdelay += 900
 
     def collisionCheck(self):
+        self.playertouchinglog(self)
         for p in self._player:
             for go in self._gameobjects:
                 # abs to make sure the distance is right regardless of if it's positive or negative
@@ -231,9 +233,12 @@ class GameWorld(metaclass=Singleton):
                     abs(go.sprite.rect.bottom - p.rect.bottom) < 50 and
                         go.shouldmove):
                     if p.rect.colliderect(go.sprite.rect):
-
                         go.onCollision(p)
-        self.playertouchinglog(self)
+                if (go.tag == "Missile" and 
+                    abs(go.sprite.rect.bottom - p.rect.bottom) < 45):
+                      if p.rect.colliderect(go.sprite.rect):
+                       p.isdead = True
+       
 
 
     def playertouchinglog(self):
