@@ -41,12 +41,12 @@ class GameWorld(metaclass=Singleton):
         self.logSpawnerMan = LogSpawnerMan()
         self.deltatime = 0
         self.score = Counter()
-        self.menu = Menu()
+      
         self.currentlevel = 0
         self.newlevel = 1
         self.gaming = False
 
-        self.screen = pygame.display.set_mode((1200, 700))
+
         self.mytimer = StopWatch.StopWatch()
         self.pausetimer = StopWatch.StopWatch()
         self.now = 0
@@ -69,11 +69,12 @@ class GameWorld(metaclass=Singleton):
         pygame.init()
         pygame.font.init()
         pygame.display.set_caption("My Pygame window")
+        self.screen = pygame.display.set_mode((1200, 700))
+        self.menu = Menu()
 
     def runpygame(self):
         self.__init__(self) 
         self.score.start_ticks = pygame.time.get_ticks()
-        #self.now = pygame.time.get_ticks()
              
         fps = 60.0
         fpsClock = pygame.time.Clock()
@@ -83,7 +84,6 @@ class GameWorld(metaclass=Singleton):
         log.shouldmove = False
         self._gameobjects.append(log)
 
-        # self._gameobjects.append(log)
         player = Player("Sprites/Player/Player1.png")
         player.rect.x = 300
         player.rect.y = 580
@@ -95,12 +95,13 @@ class GameWorld(metaclass=Singleton):
             self.draw(self, self.screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
         
-        #remove all logs
+        #remove all logs when it breaks gameloop
         tmp = [l for l in self._gameobjects if isinstance(l, Log)]
         for x in tmp:
             self._gameobjects.remove(x)
         self.mytimer.reset()
         self._player.remove(player)
+        self.menu.isactive = True
         
         
 
@@ -119,6 +120,8 @@ class GameWorld(metaclass=Singleton):
         screen.fill((0, 150, 255))
         if self.menu.isactive:
             self.menu.draw(screen)
+        else:
+            self.score.draw(screen)
         for go in self.get_gameobjects(self):
             go.draw(screen)
 
@@ -127,9 +130,6 @@ class GameWorld(metaclass=Singleton):
 
         if hasattr(self, '_boss'):
             self._boss.draw(screen)
-
-        self.score.draw(screen)
-
         pygame.display.update()
 
     def gamelogic(self, dt):
@@ -245,6 +245,7 @@ class GameWorld(metaclass=Singleton):
             if isinstance(collides[0], Log):
                 p.isdead = False
         except IndexError:
+            self.menu.currentscore = self.score.seconds
             p.isdead = True
             pygame.mixer.music.stop()
 
