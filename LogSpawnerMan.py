@@ -69,7 +69,10 @@ class LogSpawnerMan():
             i += 1
             if i >= currentlevel:
                 break
-            
+    
+    def delayspawns(self, delay):
+        for x in self.spawnpoints:       
+            x.spawntime += delay
     def setlogspeed(self, newlogspeed):
         self.logmovespeed = 2 + (newlogspeed / 4)
         print(f"Logspeed: {self.logmovespeed}")

@@ -11,8 +11,7 @@ class Counter():
         self.seconds = 0
 
     def countup(self):
-        self.seconds = (pygame.time.get_ticks() -
-                        self.start_ticks) / 1000 * self.multiplier
+        self.seconds += 0.01 * self.multiplier
 
     def draw(self, screen):
         self.text_surface = self.my_font.render(

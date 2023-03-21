@@ -9,6 +9,7 @@ class Menu():
         #self.rect = self.text_surface.get_rect()
         self.rect = pygame.Rect(400,500, 220, 50)
         self.isactive = True
+        self.delaychecked = False
 
 
     def menu_update(self, dt):
@@ -19,7 +20,10 @@ class Menu():
          collide = self.rect.collidepoint(point)
          if collide and pygame.mouse.get_pressed()[0]:
             #print("it be colliding")
+            if (self.isactive):
+                self.delaychecked = False
             self.isactive = False
+            
         
 
     

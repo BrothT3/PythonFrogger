@@ -88,7 +88,7 @@ class GameWorld(metaclass=Singleton):
         player.rect.x = 300
         player.rect.y = 580
         self._player.append(player)
-        
+        self.delaychecked = False
         # gameloop
         while not player.isdead:
             self.update(self, self.deltatime)
@@ -168,26 +168,32 @@ class GameWorld(metaclass=Singleton):
 
     def leveltime(self):
         self.now = self.mytimer.get_seconds()
+        
+        if not self.menu.delaychecked:
+            self.delay = pygame.time.get_ticks()
+            self.logSpawnerMan.delayspawns(self.delay)
+            self.menu.delaychecked = True
 
-        if (self.now - 5 > 0):
+        if (self.now - (50 + self.delay/1000) > 0):
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
-        elif (self.now - 40 > 0):
+        elif (self.now - (40 + self.delay/1000) > 0):
             self.newlevel = 5
             self.changelevel(self)
-        elif (self.now - 30 > 0):
+        elif (self.now - (30 + self.delay/1000) > 0):
             self.newlevel = 4
             self.changelevel(self)
-        elif (self.now - 20> 0):
+        elif (self.now - (20 + self.delay/1000) > 0):
             self.newlevel = 3
             self.changelevel(self)
-        elif (self.now - 10 > 0):
+        elif (self.now - (10 + self.delay/1000) > 0):
             self.newlevel = 2
             self.changelevel(self)
         elif (self.now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
+            
             
             
             
@@ -199,7 +205,7 @@ class GameWorld(metaclass=Singleton):
                 pygame.mixer.music.play(-1)
             if self.newlevel == 6 and self.newlevel > self.currentlevel:
                 self._boss = self.spawnboss(self)
-
+            self.score.multiplier = 1 + (1 * self.newlevel)
 
             self.currentlevel = self.newlevel
             print(f"you are on level {self.currentlevel}")    
