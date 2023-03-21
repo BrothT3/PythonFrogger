@@ -1,4 +1,5 @@
 from msvcrt import setmode
+import time
 import pygame, sys
 from GameObject import GameObject
 from GameObjects.Log import Log
@@ -47,6 +48,7 @@ class GameWorld(metaclass=Singleton):
 
         self.screen = pygame.display.set_mode((1200, 700))
         self.mytimer = StopWatch.StopWatch()
+        self.pausetimer = StopWatch.StopWatch()
         self.now = 0
         
 
@@ -109,7 +111,7 @@ class GameWorld(metaclass=Singleton):
         if (self.menu.isactive):
             self.menu.menu_update(dt)
         elif (not self.menu.isactive):
-            self.mytimer.update( dt)
+            self.mytimer.update(dt)
             self.gamelogic(self, dt)
 
     def draw(self, screen):
@@ -153,6 +155,7 @@ class GameWorld(metaclass=Singleton):
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_ESCAPE]):
             self.menu.isactive = True
+            self.pausetimer.reset()
 
     def createlogs(self):
         self.gwspawns = self.logSpawnerMan.checkready()
@@ -197,7 +200,7 @@ class GameWorld(metaclass=Singleton):
             print(f"you are on level {self.currentlevel}")    
     
     def spawnboss(self):
-        boss = Boss("Sprites/Player/player1.png")
+        boss = Boss("Sprites/Boss.png")
 
         self.shootdelay = 50000
         return boss
