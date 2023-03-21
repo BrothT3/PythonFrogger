@@ -18,7 +18,7 @@ class Boss(GameObject.GameObject):
         self.posx = 0
 
     def move(self, playerpos):
-        destination = random.randint(playerpos -10, playerpos + 10)
+        destination = playerpos -180
         if self.sprite.rect.x < destination:
             self.sprite.rect.x += 4
         elif self.sprite.rect.x > destination:

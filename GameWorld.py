@@ -169,7 +169,7 @@ class GameWorld(metaclass=Singleton):
     def leveltime(self):
         self.now = self.mytimer.get_seconds()
 
-        if (self.now - 50 > 0):
+        if (self.now - 5 > 0):
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
@@ -206,8 +206,8 @@ class GameWorld(metaclass=Singleton):
     
     def spawnboss(self):
         boss = Boss("Sprites/Boss.png")
-
-        self.shootdelay = 50000
+        intshoot = pygame.time.get_ticks()
+        self.shootdelay = intshoot
         return boss
 
         
@@ -218,7 +218,7 @@ class GameWorld(metaclass=Singleton):
             playerpos = self._player[0].rect.x
             self._boss.move(playerpos)
             if (now - self.shootdelay > 0):
-                mispos = self._boss.sprite.rect.x
+                mispos = self._boss.sprite.rect.x + 180
                 missile = Missile("Sprites/Player/player1.png", mispos)
                 self._gameobjects.append(missile)
                 self.shootdelay += 900
