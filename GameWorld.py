@@ -50,6 +50,7 @@ class GameWorld(metaclass=Singleton):
         self.mytimer = StopWatch.StopWatch()
         self.pausetimer = StopWatch.StopWatch()
         self.now = 0
+        pygame.mixer.music.load("SoundEffects/Bongobitches.wav")
         
 
     @property
@@ -87,7 +88,7 @@ class GameWorld(metaclass=Singleton):
         player.rect.x = 300
         player.rect.y = 580
         self._player.append(player)
-
+        
         # gameloop
         while not player.isdead:
             self.update(self, self.deltatime)
@@ -149,7 +150,7 @@ class GameWorld(metaclass=Singleton):
         self.score.countup()
 
         self.openmenu(self)
-
+        
 
     def openmenu(self):
         keys = pygame.key.get_pressed()
@@ -188,13 +189,17 @@ class GameWorld(metaclass=Singleton):
             self.newlevel = 1
             self.changelevel(self)
             
+            
+            
 
     def changelevel(self):
         if self.newlevel > self.currentlevel:
             LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
-
+            if self.newlevel == 1 and self.newlevel > self.currentlevel:
+                pygame.mixer.music.play(-1)
             if self.newlevel == 6 and self.newlevel > self.currentlevel:
                 self._boss = self.spawnboss(self)
+
 
             self.currentlevel = self.newlevel
             print(f"you are on level {self.currentlevel}")    
@@ -241,6 +246,7 @@ class GameWorld(metaclass=Singleton):
                 p.isdead = False
         except IndexError:
             p.isdead = True
+            pygame.mixer.music.stop()
 
 
 
