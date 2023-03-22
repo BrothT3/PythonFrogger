@@ -5,6 +5,7 @@ from overrides import override
 import pygame
 import GameObject
 import GameWorld
+from StopWatch import StopWatch
 
 class Log(GameObject.GameObject):
 
@@ -36,6 +37,7 @@ class Log(GameObject.GameObject):
     @shouldmove.setter
     def shouldmove(self, value):
         self._shouldmove = value
+        self.stopwatch = StopWatch()
    
     def determineLane(self):
         if not self.lanedetermined:
@@ -66,9 +68,15 @@ class Log(GameObject.GameObject):
 
     @override
     def update(self, dt):
-        #self.determineLane()
+        
         if self.shouldmove:
             self.move()
+
+        if hasattr(self, 'stopwatch'):
+            self.stopwatch.update(dt)
+            if self.stopwatch.countdown >= 10:
+                self.toberemoved = True
+        
     @override
     def draw(self, screen):
         screen.blit(self.sprite_image, self.sprite.rect)
