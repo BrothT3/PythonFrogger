@@ -68,7 +68,7 @@ class GameWorld(metaclass=Singleton):
     def firstrunint(self):
         pygame.init()
         pygame.font.init()
-        pygame.display.set_caption("My Pygame window")
+        pygame.display.set_caption("Frogger")
         self.screen = pygame.display.set_mode((1200, 700))
         self.menu = Menu()
 
