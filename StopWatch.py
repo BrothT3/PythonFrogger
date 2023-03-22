@@ -7,6 +7,7 @@ class StopWatch():
     def __init__(self):
         self.start = time.time()
         self.countdown = 0
+        self.delay = 0
 
 
     def get_seconds(self):
@@ -16,7 +17,7 @@ class StopWatch():
     def update(self, dt):
         now = time.time()
 
-        self.countdown = now - self.start
+        self.countdown = now - (self.start + self.delay)
 
 
     def reset(self):

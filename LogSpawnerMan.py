@@ -72,7 +72,7 @@ class LogSpawnerMan():
     
     def delayspawns(self, delay):
         for x in self.spawnpoints:       
-            x.spawntime += delay
+            x.spawntime += delay * 1000
     def setlogspeed(self, newlogspeed):
         self.logmovespeed = 2 + (newlogspeed / 4)
         print(f"Logspeed: {self.logmovespeed}")
