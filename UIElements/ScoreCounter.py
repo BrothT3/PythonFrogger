@@ -12,6 +12,7 @@ class Counter():
 
     def countup(self):
         self.seconds += 0.01 * self.multiplier
+        
 
     def draw(self, screen):
         self.text_surface = self.my_font.render(

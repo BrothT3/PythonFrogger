@@ -20,6 +20,7 @@ class Menu():
         self.currentscore = 0
         self.isactive = True
         self.delaychecked = False
+        self.pausetime = 0
 
     def menu_update(self, dt):
 
@@ -28,6 +29,7 @@ class Menu():
         wbuttoncollide = self.wbuttonrect.collidepoint(point)
         if wbuttoncollide and pygame.mouse.get_pressed()[0]:
             self.isactive = False
+            self.delaychecked = False
         ebuttoncollide = self.ebuttonrect.collidepoint(point)
         if ebuttoncollide and pygame.mouse.get_pressed()[0]:
           sys.exit()

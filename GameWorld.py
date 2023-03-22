@@ -118,6 +118,7 @@ class GameWorld(metaclass=Singleton):
                 sys.exit()
         if (self.menu.isactive):
             self.menu.menu_update(dt)
+            self.pausetimer.update(dt)
         elif (not self.menu.isactive):
             self.mytimer.update(dt)
             self.gamelogic(self, dt)
@@ -127,6 +128,14 @@ class GameWorld(metaclass=Singleton):
         
         for go in self.get_gameobjects(self):
             go.draw(screen)
+
+
+        if self.menu.isactive:
+            self.menu.draw(screen)
+
+        else:
+            self.score.draw(screen)
+
 
         for p in self.get_player(self):
             p.draw(screen)
@@ -167,6 +176,9 @@ class GameWorld(metaclass=Singleton):
         if (keys[pygame.K_ESCAPE]):
             self.menu.isactive = True
 
+            self.pausetimer.reset()
+            
+            self.pausesecs = self.mytimer.get_seconds()
 
 
     def createlogs(self):
@@ -185,24 +197,31 @@ class GameWorld(metaclass=Singleton):
         self.now = self.mytimer.get_seconds()
         
         if not self.menu.delaychecked:
-            self.delay = pygame.time.get_ticks()
+            self.delay = self.now
+            if (hasattr(self, 'pausesecs')):
+                pausedifference = self.delay - self.pausesecs
+                self.delay = self.delay - pausedifference
+                self.mytimer.delay += self.pausetimer.countdown
             self.logSpawnerMan.delayspawns(self.delay)
             self.menu.delaychecked = True
 
-        if (self.now - (5 + self.delay/1000) > 0):
+
+
+        if ((self.now) - (50 + self.delay) > 0):
+
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
-        elif (self.now - (40 + self.delay/1000) > 0):
+        elif (self.now - (40 + self.delay) > 0):
             self.newlevel = 5
             self.changelevel(self)
-        elif (self.now - (30 + self.delay/1000) > 0):
+        elif (self.now - (30 + self.delay) > 0):
             self.newlevel = 4
             self.changelevel(self)
-        elif (self.now - (20 + self.delay/1000) > 0):
+        elif (self.now - (20 + self.delay) > 0):
             self.newlevel = 3
             self.changelevel(self)
-        elif (self.now - (10 + self.delay/1000) > 0):
+        elif (self.now - (10 + self.delay) > 0):
             self.newlevel = 2
             self.changelevel(self)
         elif (self.now - 0 > 0):
@@ -223,7 +242,8 @@ class GameWorld(metaclass=Singleton):
             self.score.multiplier = 1 + (1 * self.newlevel)
 
             self.currentlevel = self.newlevel
-            print(f"you are on level {self.currentlevel}")    
+            print(f"you are on level {self.currentlevel}")
+
     
     def spawnboss(self):
         boss = Boss("Sprites/Boss.png")
