@@ -48,7 +48,6 @@ class GameWorld(metaclass=Singleton):
 
 
         self.mytimer = StopWatch.StopWatch()
-        self.pausetimer = StopWatch.StopWatch()
         self.now = 0
         pygame.mixer.music.load("SoundEffects/Bongobitches.wav")
         
@@ -58,7 +57,8 @@ class GameWorld(metaclass=Singleton):
         return self.deltatime
 
     # endregion
-
+    def getcount(self):
+        return len(self._gameobjects)
     def get_gameobjects(self):
         return self._gameobjects
 
@@ -68,13 +68,14 @@ class GameWorld(metaclass=Singleton):
     def firstrunint(self):
         pygame.init()
         pygame.font.init()
-        pygame.display.set_caption("My Pygame window")
+        pygame.display.set_caption("Frogger")
         self.screen = pygame.display.set_mode((1200, 700))
         self.menu = Menu()
 
     def runpygame(self):
         self.__init__(self) 
         self.score.start_ticks = pygame.time.get_ticks()
+
              
         fps = 60.0
         fpsClock = pygame.time.Clock()
@@ -94,13 +95,18 @@ class GameWorld(metaclass=Singleton):
             self.update(self, self.deltatime)
             self.draw(self, self.screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
+            #print(self.getcount(self))
         
-        #remove all logs when it breaks gameloop
-        tmp = [l for l in self._gameobjects if isinstance(l, Log)]
+        #remove all logs and missiles when it breaks gameloop
+        tmp = [l for l in self._gameobjects if isinstance(l, Log) or isinstance(l, Missile)]
         for x in tmp:
             self._gameobjects.remove(x)
         self.mytimer.reset()
         self._player.remove(player)
+        if hasattr(self, '_boss'):
+            del(self._boss)
+        
+        self.menu.currentscore = self.score.seconds
         self.menu.isactive = True
         
         
@@ -123,18 +129,26 @@ class GameWorld(metaclass=Singleton):
         for go in self.get_gameobjects(self):
             go.draw(screen)
 
+
         if self.menu.isactive:
             self.menu.draw(screen)
 
         else:
             self.score.draw(screen)
 
+
         for p in self.get_player(self):
             p.draw(screen)
 
         if hasattr(self, '_boss'):
             self._boss.draw(screen)
+
+        if self.menu.isactive:
+            self.menu.draw(screen)
+        else:
+            self.score.draw(screen)
         pygame.display.update()
+
 
     def gamelogic(self, dt):
         for p in self.get_player(self):
@@ -146,8 +160,9 @@ class GameWorld(metaclass=Singleton):
             else:
                 go.update(dt)
 
-        if (self._gameobjects.count(GameObject) <= 8):
+        if (len(self.get_gameobjects(self)) <= 8):
             self.createlogs(self)
+           
 
         self.leveltime(self)
         self.collisionCheck(self)
@@ -160,19 +175,22 @@ class GameWorld(metaclass=Singleton):
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_ESCAPE]):
             self.menu.isactive = True
+
             self.pausetimer.reset()
             
             self.pausesecs = self.mytimer.get_seconds()
-            
 
-            
 
     def createlogs(self):
         self.gwspawns = self.logSpawnerMan.checkready()
-        if self.gwspawns is not 0:
+        
+        try:
+         if len(self.gwspawns) != 0:
             self._gameobjects.append(
-                self.logSpawnerMan.spawnLog(self.gwspawns))
-        else:
+                self.logSpawnerMan.spawnLog(self.gwspawns))  
+         else:
+             pass
+        except TypeError:
             pass
 
     def leveltime(self):
@@ -188,7 +206,9 @@ class GameWorld(metaclass=Singleton):
             self.menu.delaychecked = True
 
 
+
         if ((self.now) - (50 + self.delay) > 0):
+
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
@@ -214,7 +234,7 @@ class GameWorld(metaclass=Singleton):
 
     def changelevel(self):
         if self.newlevel > self.currentlevel:
-            LogSpawnerMan.disableSpawn(self.logSpawnerMan, self.newlevel)
+            self.logSpawnerMan.disableSpawn(self.newlevel)
             if self.newlevel == 1 and self.newlevel > self.currentlevel:
                 pygame.mixer.music.play(-1)
             if self.newlevel == 6 and self.newlevel > self.currentlevel:
@@ -256,9 +276,10 @@ class GameWorld(metaclass=Singleton):
                     if p.rect.colliderect(go.sprite.rect):
                         go.onCollision(p)
                 if (go.tag == "Missile" and 
-                    abs(go.sprite.rect.bottom - p.rect.bottom) < 45):
+                    abs(go.sprite.rect.bottom - p.rect.bottom) < 20):
                       if p.rect.colliderect(go.sprite.rect):
                        p.isdead = True
+
        
 
 
@@ -267,7 +288,7 @@ class GameWorld(metaclass=Singleton):
         p = self._player[0]
         try:
             collides = [x for x in self._gameobjects if (abs(
-                x.sprite.rect.bottom - p.rect.bottom) < 50 and p.rect.colliderect(x.sprite.rect))]
+                x.sprite.rect.bottom - p.rect.bottom) < 40 and p.rect.colliderect(x.sprite.rect))]
             if isinstance(collides[0], Log):
                 p.isdead = False
         except IndexError:
