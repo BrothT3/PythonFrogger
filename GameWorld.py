@@ -118,7 +118,7 @@ class GameWorld(metaclass=Singleton):
                 sys.exit()
         if (self.menu.isactive):
             self.menu.menu_update(dt)
-            self.pausetimer.update(dt)
+
         elif (not self.menu.isactive):
             self.mytimer.update(dt)
             self.gamelogic(self, dt)
@@ -175,8 +175,6 @@ class GameWorld(metaclass=Singleton):
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_ESCAPE]):
             self.menu.isactive = True
-
-            self.pausetimer.reset()
             
             self.pausesecs = self.mytimer.get_seconds()
 
@@ -185,7 +183,7 @@ class GameWorld(metaclass=Singleton):
         self.gwspawns = self.logSpawnerMan.checkready()
         
         try:
-         if len(self.gwspawns) != 0:
+         if len(self.gwspawns) < 8:
             self._gameobjects.append(
                 self.logSpawnerMan.spawnLog(self.gwspawns))  
          else:
@@ -197,31 +195,27 @@ class GameWorld(metaclass=Singleton):
         self.now = self.mytimer.get_seconds()
         
         if not self.menu.delaychecked:
-            self.delay = self.now
-            if (hasattr(self, 'pausesecs')):
-                pausedifference = self.delay - self.pausesecs
-                self.delay = self.delay - pausedifference
-                self.mytimer.delay += self.pausetimer.countdown
+            self.delay = pygame.time.get_ticks()
             self.logSpawnerMan.delayspawns(self.delay)
             self.menu.delaychecked = True
 
 
 
-        if ((self.now) - (50 + self.delay) > 0):
+        if ((self.now) - (50) > 0):
 
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
-        elif (self.now - (40 + self.delay) > 0):
+        elif (self.now - (40) > 0):
             self.newlevel = 5
             self.changelevel(self)
-        elif (self.now - (30 + self.delay) > 0):
+        elif (self.now - (30) > 0):
             self.newlevel = 4
             self.changelevel(self)
-        elif (self.now - (20 + self.delay) > 0):
+        elif (self.now - (20) > 0):
             self.newlevel = 3
             self.changelevel(self)
-        elif (self.now - (10 + self.delay) > 0):
+        elif (self.now - (10) > 0):
             self.newlevel = 2
             self.changelevel(self)
         elif (self.now - 0 > 0):
@@ -279,6 +273,8 @@ class GameWorld(metaclass=Singleton):
                     abs(go.sprite.rect.bottom - p.rect.bottom) < 20):
                       if p.rect.colliderect(go.sprite.rect):
                        p.isdead = True
+                       self.logSpawnerMan.resetspawns()
+                       self.delaychecked = False
 
        
 
@@ -294,6 +290,8 @@ class GameWorld(metaclass=Singleton):
         except IndexError:
             self.menu.currentscore = self.score.seconds
             p.isdead = True
+            self.logSpawnerMan.resetspawns()
+            self.delaychecked = False
             pygame.mixer.music.stop()
 
 
