@@ -112,9 +112,8 @@ class Player(GameObject.GameObject):
 
     @override
     def draw(self, screen):
-        red = (255, 0, 0)
         screen.blit(self.current_sprite, self.rect)
-        pygame.draw.rect(self.current_sprite, red, [0,0, self.rect.width, self.rect.height], 1)
+       
 
         
         

@@ -7,6 +7,9 @@ class Menu():
     def __init__(self):
         pygame.font.init()
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.sprite = pygame.sprite.Sprite()
+        self.sprite_image = pygame.image.load("Sprites/frogger1.png")
+        self.sprite.rect = self.sprite_image.get_rect()
         self.welcomebutton = self.my_font.render(
             "Click To Play", False, (255, 255, 255))
         self.exitbutton = self.my_font.render("Exit", False, (255, 0, 0))
@@ -22,16 +25,6 @@ class Menu():
 
         point = pygame.mouse.get_pos()
 
-
-        #  collide = self.rect.collidepoint(point)
-        #  if collide and pygame.mouse.get_pressed()[0]:
-        #     #print("it be colliding")
-        #     if (self.isactive):
-        #         self.delaychecked = False
-        #     self.isactive = False
-            
-        
-
         wbuttoncollide = self.wbuttonrect.collidepoint(point)
         if wbuttoncollide and pygame.mouse.get_pressed()[0]:
             self.isactive = False
@@ -43,6 +36,8 @@ class Menu():
     def draw(self, screen):
 
         screen.fill((0, 150, 155))
+        
+        screen.blit(self.sprite_image, self.sprite.rect)
         screen.blit(self.welcomebutton, (250, 500))
         pygame.draw.rect(self.welcomebutton, (255,255,255), [
                          0, 0, self.wbuttonrect.width-48 , self.wbuttonrect.height-10], 1)
