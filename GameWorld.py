@@ -27,26 +27,13 @@ class GameWorld(metaclass=Singleton):
     _gameobjects = []
     _player = []
 
-    # region PROPERTIESBIATCH
-    # @property
-    # def gameObjects(self):
-    #     return self.gameObjects
-
-    # @gameObjects.setter
-    # def gameObjects(self, value):
-    #     self.gameObjects = value
-    #     self._gameobjects.add(value)
-
     def __init__(self):
         self.logSpawnerMan = LogSpawnerMan()
         self.deltatime = 0
         self.score = Counter()
-      
         self.currentlevel = 0
         self.newlevel = 1
         self.gaming = False
-
-
         self.mytimer = StopWatch.StopWatch()
         self.now = 0
         pygame.mixer.music.load("SoundEffects/Bongobitches.wav")
@@ -56,7 +43,6 @@ class GameWorld(metaclass=Singleton):
     def deltatime(self):
         return self.deltatime
 
-    # endregion
     def getcount(self):
         return len(self._gameobjects)
     def get_gameobjects(self):
@@ -65,11 +51,12 @@ class GameWorld(metaclass=Singleton):
     def get_player(self):
         return self._player
 
-    def firstrunint(self):
+    def firstruninit(self):
         pygame.init()
         pygame.font.init()
         pygame.display.set_caption("Frogger")
         self.screen = pygame.display.set_mode((1200, 700))
+        self.deathsound = pygame.mixer.Sound("SoundEffects/plunk.wav")
         self.menu = Menu()
 
     def runpygame(self):
@@ -90,25 +77,27 @@ class GameWorld(metaclass=Singleton):
         player.rect.y = 580
         self._player.append(player)
         self.delaychecked = False
+
         # gameloop
         while not player.isdead:
             self.update(self, self.deltatime)
             self.draw(self, self.screen)
             self.deltatime = fpsClock.tick(fps) / 1000.0
-            #print(self.getcount(self))
         
+        #region GameWorldCleanUp
         #remove all logs and missiles when it breaks gameloop
         tmp = [l for l in self._gameobjects if isinstance(l, Log) or isinstance(l, Missile)]
+        #because iterating through the list normally doesn't work..
         for x in tmp:
             self._gameobjects.remove(x)
         self.mytimer.reset()
         self._player.remove(player)
         if hasattr(self, '_boss'):
             del(self._boss)
-        
         self.menu.currentscore = self.score.seconds
+        self.deathsound.play()
         self.menu.isactive = True
-        
+        #endregion
         
 
     def update(self, dt):
@@ -159,15 +148,14 @@ class GameWorld(metaclass=Singleton):
                 self._gameobjects.remove(go)
             else:
                 go.update(dt)
-
-        if (len(self.get_gameobjects(self)) <= 8):
+        #amount of logs that can be spawned at a time
+        if (len(self.get_gameobjects(self)) <= 12):
             self.createlogs(self)
            
 
         self.leveltime(self)
         self.collisionCheck(self)
         self.score.countup()
-
         self.openmenu(self)
         
 
@@ -175,13 +163,11 @@ class GameWorld(metaclass=Singleton):
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_ESCAPE]):
             self.menu.isactive = True
-            
             self.pausesecs = self.mytimer.get_seconds()
 
 
     def createlogs(self):
         self.gwspawns = self.logSpawnerMan.checkready()
-        
         try:
          if len(self.gwspawns) < 8:
             self._gameobjects.append(
@@ -202,30 +188,32 @@ class GameWorld(metaclass=Singleton):
 
 
         if ((self.now) - (50) > 0):
-
             self.newlevel = 6
             self.changelevel(self)
             self.updateboss(self)
+
         elif (self.now - (40) > 0):
             self.newlevel = 5
             self.changelevel(self)
+
         elif (self.now - (30) > 0):
             self.newlevel = 4
             self.changelevel(self)
+
         elif (self.now - (20) > 0):
             self.newlevel = 3
             self.changelevel(self)
+
         elif (self.now - (10) > 0):
             self.newlevel = 2
             self.changelevel(self)
+
         elif (self.now - 0 > 0):
             self.newlevel = 1
             self.changelevel(self)
             
             
             
-            
-
     def changelevel(self):
         if self.newlevel > self.currentlevel:
             self.logSpawnerMan.disableSpawn(self.newlevel)
@@ -254,7 +242,7 @@ class GameWorld(metaclass=Singleton):
             self._boss.move(playerpos)
             if (now - self.shootdelay > 0):
                 mispos = self._boss.sprite.rect.x + 180
-                missile = Missile("Sprites/Player/player1.png", mispos)
+                missile = Missile("Sprites/Laser.png", mispos)
                 missile.tag = "Missile"
                 self._gameobjects.append(missile)
                 self.shootdelay += 900
@@ -278,10 +266,12 @@ class GameWorld(metaclass=Singleton):
 
        
 
-
+    #check if player is colliding with any log      
     def playertouchinglog(self):
-        #check if player is colliding with any log                
         p = self._player[0]
+        #if collides finds nothing it can't make a list and index first spot
+        #so if it throws an exception player is no longer touching.....
+        #I miss C#
         try:
             collides = [x for x in self._gameobjects if (abs(
                 x.sprite.rect.bottom - p.rect.bottom) < 40 and p.rect.colliderect(x.sprite.rect))]

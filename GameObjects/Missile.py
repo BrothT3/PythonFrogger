@@ -32,5 +32,4 @@ class Missile(GameObject.GameObject):
             self.toberemoved = True
     
     def onCollision(self, other):
-        #return super().onCollision(other)
         pass

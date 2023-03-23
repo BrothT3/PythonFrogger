@@ -29,14 +29,9 @@ class Player(GameObject.GameObject):
         self.animdone = True
         pygame.mixer.init()
         self.hop_sound = pygame.mixer.Sound("SoundEffects/hop.wav")
-
         self.hop_sound.set_volume(0.5)
-        self.death_sound = pygame.mixer.Sound("SoundEffects/plunk.wav")
-        self.death_sound.set_volume(0.2)
         self.isdead = False
         
-
-
     moveDistance = 100
     released = True
 

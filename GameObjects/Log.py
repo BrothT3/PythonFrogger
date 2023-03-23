@@ -20,13 +20,6 @@ class Log(GameObject.GameObject):
         self.movespeed = float(movespeed)     
         self.shouldmove = True
 
-        # self.lane = 0
-        # self.lanedetermined = False
-        # self.lanesX = [0, 710, 0, 710, 0, 710]
-        # self.lanesY = [0, 100, 200, 300, 400, 500]
-        # self.sprite.rect = self.sprite_image.get_rect()
-        # self.determineLane()
-
 
 
        
@@ -54,8 +47,6 @@ class Log(GameObject.GameObject):
         else:
             self.sprite.rect.x -= self.movespeed
 
-        #slettes når de når de her værdier, men værden bliver mindre og mindre 
-        #hver gang så skal modificeres
         if self.sprite.rect.x < -600:
             self.toberemoved = True
         elif self.sprite.rect.x >= 1250:
@@ -90,12 +81,6 @@ class Log(GameObject.GameObject):
         else:
             other.rect.x -= self.movespeed
 
-        # if self.direction:
-        #     other.rect.x += ((other.rect.x - self.sprite.rect.x ) * float(7)) / 225
-        # else:
-        #     other.rect.x -= ((other.rect.x - self.sprite.rect.x) * float(7)) / 225
-
-        #other.rect.x -= (other.rect.x - self.sprite.rect.x) * float(7) /1700
 
 
 
